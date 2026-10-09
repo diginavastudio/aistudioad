@@ -1,3 +1,10 @@
+export async function readAiResponse(response: Response): Promise<{text?:string;error?:string;configured?:boolean}> {
+ const raw=await response.text();
+ try { const data=JSON.parse(raw); if(data && typeof data==='object' && !Array.isArray(data)) return data; } catch {}
+ const hint=response.status===413?'Materi terlalu besar. Gunakan video yang lebih pendek atau gambar yang lebih kecil.':response.status===401||response.status===403?'Akses ditolak. Login Vercel lalu muat ulang halaman.':response.status>=500?'Server AI sedang bermasalah. Coba lagi sebentar.':'Respons server tidak valid. Muat ulang halaman dan coba lagi.';
+ throw new Error(hint);
+}
+
 type Part = {text?: string; inlineData?: {mimeType: string; data: string}};
 type Payload = {model?: string; contents: {parts: Part[]}; config?: {systemInstruction?: string; responseMimeType?: string}};
 
@@ -42,8 +49,9 @@ export class OpenAIClient {
    else parts.push(part);
   }
   const response=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,contents:{parts}})});
-  const data=await response.json() as {text:string;error?:string};
+  const data=await readAiResponse(response);
   if(!response.ok)throw new Error(data.error || 'Permintaan OpenAI gagal.');
+  if(typeof data.text!=="string" || !data.text) throw new Error("OpenAI tidak mengembalikan teks.");
   return {text:data.text};
  }};
 }

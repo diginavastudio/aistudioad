@@ -1,14 +1,15 @@
 'use client';
 import React, {useState,useEffect} from 'react';
+import {readAiResponse} from '../openaiClient';
 export default function AiSettings() {
  const [open,setOpen]=useState(false);
  const [status,setStatus]=useState<'loading'|'ready'|'missing'|'error'>('loading');
  const [message,setMessage]=useState('');const [testing,setTesting]=useState(false);
- useEffect(()=>{let active=true; sessionStorage.removeItem('aistudio_gemini_key'); fetch('/api/ai/status').then(async r=>await r.json() as {configured:boolean}).then(s=>{if(active)setStatus(s.configured?'ready':'missing');}).catch(()=>{if(active)setStatus('error');});return()=>{active=false;};},[]);
+ useEffect(()=>{let active=true; sessionStorage.removeItem('aistudio_gemini_key'); fetch('/api/ai/status').then(readAiResponse).then(s=>{if(active)setStatus(s.configured?'ready':'missing');}).catch(()=>{if(active)setStatus('error');});return()=>{active=false;};},[]);
  async function test() {
   setTesting(true);setMessage('');
-  try {const r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:{parts:[{text:'Reply with only OK.'}]}})});const d=await r.json() as {error?:string};setMessage(r.ok?'Koneksi OpenAI berhasil.':d.error || 'Tes koneksi gagal.');}
-  catch {setMessage('Tidak dapat memeriksa koneksi.');}finally{setTesting(false);}
+  try {const r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:{parts:[{text:'Reply with only OK.'}]}})});const d=await readAiResponse(r);setMessage(r.ok?'Koneksi OpenAI berhasil.':d.error || 'Tes koneksi gagal.');}
+  catch(e) {setMessage(e instanceof Error ? e.message : 'Tidak dapat memeriksa koneksi.');}finally{setTesting(false);}
  }
  return <>
   <button onClick={()=>setOpen(true)} className="fixed bottom-4 right-4 z-50 rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg">OpenAI · {status==='ready'?'Terkonfigurasi':status==='loading'?'Memeriksa…':'Periksa koneksi'}</button>
