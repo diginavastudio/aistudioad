@@ -1,8 +1,9 @@
+import { OpenAIClient } from '../openaiClient';
 
 import React, { useState, useEffect } from 'react';
 import { Search, ExternalLink, Filter, CheckCircle2, Eye, Video, History, X, Upload, ScanEye, Zap, Activity, Brain, Target, ShieldAlert, FileSearch, Clipboard, ThumbsUp, ThumbsDown, Lightbulb } from 'lucide-react';
 import { useStickyState } from '../utils';
-import { GoogleGenAI } from "@google/genai";
+
 
 // Tipe Data untuk Hasil Analisa Spy (Updated v2)
 interface SpyAnalysisResult {
@@ -152,16 +153,12 @@ const ToolSpy = () => {
 
     const analyzeCompetitorAd = async () => {
         if (!imageBase64) return;
-        if (!process.env.API_KEY) {
-            setErrorMsg("SISTEM ERROR: API Key tidak ditemukan. Cek konfigurasi.");
-            return;
-        }
 
         setIsAnalyzing(true);
         setErrorMsg(null);
 
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new OpenAIClient();
             const prompt = `
 ROLE:
 You are an Ads Intelligence Analyst for Indonesia.
@@ -269,7 +266,7 @@ OUTPUT FORMAT (JSON ONLY):
             `;
 
             const response = await ai.models.generateContent({
-                model: 'gemini-3-flash-preview',
+                model: 'gpt-4.1-mini',
                 contents: {
                     parts: [
                         { inlineData: { mimeType: imageMime, data: imageBase64 } }, // Use dynamic mime
@@ -287,7 +284,7 @@ OUTPUT FORMAT (JSON ONLY):
 
         } catch (error) {
             console.error(error);
-            setErrorMsg("Gagal menganalisa. Pastikan gambar jelas atau koneksi internet stabil.");
+            setErrorMsg(error instanceof Error ? error.message : "Gagal menganalisa.");
         } finally {
             setIsAnalyzing(false);
         }

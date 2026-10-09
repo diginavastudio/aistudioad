@@ -10,7 +10,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ appMode, onModeChange }) => {
   return (
-    <div className="hidden md:block w-[300px] h-[calc(100vh-56px)] overflow-y-auto fixed left-0 top-14 pt-4 px-2 no-scrollbar hover:scrollbar-thin">
+    <div className="block w-full md:w-[300px] h-[calc(100vh-56px)] overflow-y-auto fixed left-0 top-14 pt-4 px-2 no-scrollbar hover:scrollbar-thin">
       
       {/* User Section */}
       <div className="flex items-center gap-3 px-2 py-2 mb-4 hover:bg-fb-hover rounded-lg cursor-pointer">

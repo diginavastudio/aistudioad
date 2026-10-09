@@ -1,3 +1,4 @@
+import { OpenAIClient } from '../openaiClient';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { 
@@ -10,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useStickyState } from '../utils';
 import { DecisionTab } from '../types';
-import { GoogleGenAI } from "@google/genai";
+
 
 // --- 🛠️ UNICODE CONVERSION HELPERS ---
 const toUnicodeBold = (text: string) => {
@@ -173,7 +174,8 @@ const ToolCreative: React.FC<ToolCreativeProps> = ({ activeTab, onTabChange }) =
         setIsSuggesting(true);
         setError(null);
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            
+            const ai = new OpenAIClient();
             const prompt = `
             Product: ${product}
             Target: ${targetPerson || 'Umum'}
@@ -185,14 +187,14 @@ const ToolCreative: React.FC<ToolCreativeProps> = ({ activeTab, onTabChange }) =
             Example for 'Mainan': "Anak kecanduan HP susah dibilangin"
             `;
             const response = await ai.models.generateContent({
-                model: 'gemini-3-flash-preview',
+                model: 'gpt-4.1-mini',
                 contents: { parts: [{ text: prompt }] },
             });
             const suggestion = response.text.trim();
             setPainPoint(suggestion);
         } catch (e) {
             console.error(e);
-            setError("Gagal cari ide. Coba tulis manual.");
+            setError(e instanceof Error ? e.message : "Gagal cari ide.");
         } finally {
             setIsSuggesting(false);
         }
@@ -207,7 +209,8 @@ const ToolCreative: React.FC<ToolCreativeProps> = ({ activeTab, onTabChange }) =
         setIsSuggestingOffer(true);
         setError(null);
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            
+            const ai = new OpenAIClient();
             const prompt = `
             Product: ${product}
             Price: ${price}
@@ -222,14 +225,14 @@ const ToolCreative: React.FC<ToolCreativeProps> = ({ activeTab, onTabChange }) =
             - "Bonus Pouch Eksklusif"
             `;
             const response = await ai.models.generateContent({
-                model: 'gemini-3-flash-preview',
+                model: 'gpt-4.1-mini',
                 contents: { parts: [{ text: prompt }] },
             });
             const suggestion = response.text.trim();
             setBundleDetail(suggestion);
         } catch (e) {
             console.error(e);
-            setError("Gagal cari ide offer. Coba tulis manual.");
+            setError(e instanceof Error ? e.message : "Gagal cari ide offer.");
         } finally {
             setIsSuggestingOffer(false);
         }
@@ -251,7 +254,8 @@ const ToolCreative: React.FC<ToolCreativeProps> = ({ activeTab, onTabChange }) =
         setResults([]); // Reset visual
         
         try {
-             const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+             
+            const ai = new OpenAIClient();
              
              // HARDLOCK SYSTEM INSTRUCTION (Identical for both Text & Video)
              const systemInstruction = `
@@ -327,7 +331,7 @@ OUTPUT FORMAT (JSON ARRAY):
                 // VIDEO MODE PROMPT
                 const videoPrompt = `
                 TASK:
-                1. WATCH the video carefully. Identify the Product Name, the core Pain Point shown visually, and the Solution offered.
+                1. Analyze the sampled video frames carefully. Audio is not provided. Do not infer spoken content. Identify the Product Name, the core Pain Point shown visually, and the Solution offered.
                 2. IGNORE the manual text inputs. Base your copywriting STRICTLY on the visual content of the video.
                 3. GENERATE 12 Ad Variations based on the video content, following the exact same HARDLOCK rules and JSON format as defined in the system instructions.
                 
@@ -357,7 +361,7 @@ OUTPUT FORMAT (JSON ARRAY):
              }
 
              const response = await ai.models.generateContent({
-                model: 'gemini-3-flash-preview',
+                model: 'gpt-4.1-mini',
                 contents: { parts: contentParts },
                 config: { systemInstruction, responseMimeType: "application/json" }
              });
@@ -397,7 +401,7 @@ OUTPUT FORMAT (JSON ARRAY):
 
         } catch (err) {
             console.error("API Error:", err);
-            setError("Gagal generate. Pastikan koneksi aman atau coba lagi. (Jika video, pastikan < 9MB)");
+            setError(err instanceof Error ? err.message : "Gagal generate.");
             setIsGenerating(false);
         }
     };
@@ -507,7 +511,7 @@ OUTPUT FORMAT (JSON ARRAY):
                                             <Upload className="w-7 h-7"/>
                                         </div>
                                         <h4 className="font-bold text-gray-800">Upload Video Iklan (Max 9MB)</h4>
-                                        <p className="text-sm text-gray-500 mt-1">AI akan menonton video ini dan membuat 12 variasi copy berdasarkan visualnya.</p>
+                                        <p className="text-sm text-gray-500 mt-1">OpenAI menganalisis cuplikan frame video untuk membuat 12 variasi copy. Audio tidak dianalisis.</p>
                                     </>
                                 )}
                             </div>
