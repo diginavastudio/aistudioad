@@ -1,7 +1,8 @@
+import { OpenAIClient } from '../openaiClient';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Activity, AlertTriangle, CheckCircle2, Skull, TrendingUp, Upload, Eye, X, FileBarChart, ScanEye, Zap, Maximize2, ZoomIn, Video, Play, Trash2, Image as ImageIcon, Clapperboard, Star, Download } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
+
 
 // Tipe Data untuk Hasil Analisa AI
 interface AIAnalysisResult {
@@ -63,7 +64,7 @@ const ToolAnalyzer = () => {
         };
     }, [dashPreview, videoPreview]);
 
-    // Helper: Convert File to Base64 (Raw for Gemini)
+    // Helper: Convert File to Base64 (Raw media input)
     const fileToBase64 = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -147,16 +148,12 @@ const ToolAnalyzer = () => {
         const currentMime = mode === 'DASHBOARD' ? dashMime : videoMime;
 
         if (!currentBase64) return;
-        if (!process.env.API_KEY) {
-            setErrorMsg("SISTEM ERROR: API Key tidak ditemukan. Cek konfigurasi.");
-            return;
-        }
 
         setIsAnalyzing(true);
         setErrorMsg(null);
 
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new OpenAIClient();
             
             let promptText = "";
 
@@ -228,7 +225,7 @@ const ToolAnalyzer = () => {
             }
 
             const response = await ai.models.generateContent({
-                model: 'gemini-3-flash-preview',
+                model: 'gpt-4.1-mini',
                 contents: {
                     parts: [
                         { inlineData: { mimeType: currentMime, data: currentBase64 } },
@@ -258,7 +255,7 @@ const ToolAnalyzer = () => {
 
         } catch (error) {
             console.error("AI Error:", error);
-            setErrorMsg("Gagal menganalisa. Video terlalu besar atau API Busy.");
+            setErrorMsg(error instanceof Error ? error.message : "Gagal menganalisa.");
         } finally {
             setIsAnalyzing(false);
         }

@@ -1,3 +1,4 @@
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
@@ -7,6 +8,7 @@ import ToolView from './components/ToolView';
 import { GUIDES } from './constants';
 import { DecisionTab, AppMode } from './types';
 import { Menu } from 'lucide-react';
+import AiSettings from './components/AiSettings';
 
 const App: React.FC = () => {
   // Default to Tactical (Keputusan Iklan)
@@ -69,6 +71,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-fb-bg font-sans">
+      <AiSettings />
       {/* Navbar receives appMode to decide which tabs to show */}
       <Navbar 
         appMode={appMode}
