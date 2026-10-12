@@ -1,0 +1,1 @@
+{"manifest_version":3,"name":"AI Studio Meta Intelligence","version":"0.1.0","description":"Ekspor data iklan yang tampil untuk riset di AI Studio.","permissions":["activeTab","scripting"],"action":{"default_popup":"popup.html"}}
