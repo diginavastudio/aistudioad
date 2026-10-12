@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import { parseBatch, scoreAd } from './meta';
+const ad = {id:'123456789',advertiser:'Brand',copy:'Contoh',startDate:null,status:'unknown',capturedAt:'2026-10-12T00:00:00Z',sourceUrl:'https://www.facebook.com/ads/library/?id=123456789'};
+const parse=(a:unknown)=>parseBatch({schemaVersion:1,ads:[a]});
+assert.equal(scoreAd(parse(ad)[0]).days,null);
+assert.equal(scoreAd(parse(ad)[0]).score,15);
+assert.equal(scoreAd(parse({...ad,startDate:'2026-07-01',status:'active'})[0]).score,100);
+assert.throws(()=>parse({...ad,sourceUrl:'javascript:alert(1)'}));
+assert.throws(()=>parse({...ad,startDate:'2027-01-01'}));
+assert.throws(()=>parseBatch({schemaVersion:2,ads:[]}));
+console.log('Meta intelligence validation/scoring tests passed');
