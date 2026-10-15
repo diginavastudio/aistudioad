@@ -85,7 +85,7 @@ const Sidebar: React.FC<SidebarProps> = ({ appMode, onModeChange }) => {
       <div className="border-b border-fb-stroke my-2 mx-2"></div>
 
       <div className="px-4 py-4 text-xs text-fb-secondary">
-        <p><strong>Diginava 2025 Validated</strong><br/>Paid Social SOP · Privacy · Terms · Meta © 2025</p>
+        <p><strong>Materi internal</strong><br/>Periksa sumber dan tanggal pembaruan sebelum menerapkan panduan platform.</p>
       </div>
     </div>
   );

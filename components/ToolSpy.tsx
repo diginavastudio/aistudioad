@@ -1,22 +1,19 @@
 import { OpenAIClient } from '../openaiClient';
 
 import React, { useState, useEffect } from 'react';
-import { Search, ExternalLink, Filter, CheckCircle2, Eye, Video, History, X, Upload, ScanEye, Zap, Activity, Brain, Target, ShieldAlert, FileSearch, Clipboard, ThumbsUp, ThumbsDown, Lightbulb } from 'lucide-react';
+import { Search, ExternalLink, Filter, CheckCircle2, Eye, Video, History, X, Upload, ScanEye, Zap, Activity, Brain, Target, FileSearch, Clipboard, ThumbsUp, ThumbsDown, Lightbulb } from 'lucide-react';
 import { useStickyState } from '../utils';
 
 
 // Tipe Data untuk Hasil Analisa Spy (Updated v2)
 interface SpyAnalysisResult {
-    status: 'ABADI' | 'BERTAHAN' | 'CEPAT MATI';
-    active_days: string;
-    profit_likelihood: 'HIGH' | 'MEDIUM' | 'LOW';
     structure: {
         hook_type: string;
         angle: string;
         offer_style: string;
-        funnel_type: 'CTWA' | 'CHECKOUT' | 'MIXED';
+        funnel_type: 'CTWA' | 'CHECKOUT' | 'MIXED' | 'UNKNOWN';
     };
-    why_winning: string[];
+    observations: string[];
     replication_atm: {
         do: string[];
         dont: string[];
@@ -55,9 +52,17 @@ const ToolSpy = () => {
             if (!items) return;
 
             for (const item of items) {
-                if (item.type.indexOf('image') !== -1) {
+                if (item.type.startsWith('image/')) {
                     const blob = item.getAsFile();
                     if (blob) {
+                        if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(blob.type)) {
+                            setErrorMsg('Gunakan gambar JPG, PNG, WebP, atau GIF.');
+                            return;
+                        }
+                        if (blob.size > 8_000_000) {
+                            setErrorMsg('Ukuran screenshot maksimal 8 MB.');
+                            return;
+                        }
                         // Preview
                         const url = URL.createObjectURL(blob);
                         setImagePreview(url); // Set new URL (cleanup handled by useEffect)
@@ -105,18 +110,18 @@ const ToolSpy = () => {
         if (dateFilter === 'last_90_days') {
             const d = new Date();
             d.setDate(d.getDate() - 90);
-            const dateString = d.toISOString().split('T')[0];
+            const dateString = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
             url += `&start_date[min]=${dateString}`;
         }
-        window.open(url, '_blank');
+        window.open(url, '_blank', 'noopener,noreferrer');
     };
 
     const handleTikTokSearch = () => {
         if (!keyword) return;
         addToHistory(keyword);
-        const period = dateFilter === 'last_90_days' ? '90' : '30';
-        const url = `https://ads.tiktok.com/business/creativecenter/inspiration/topads/pc/en?period=${period}&region=${country}&keyword=${encodeURIComponent(keyword)}`;
-        window.open(url, '_blank');
+        const periodQuery = dateFilter === 'last_90_days' ? '&period=90' : '';
+        const url = `https://ads.tiktok.com/business/creativecenter/inspiration/topads/pc/en?region=${country}&keyword=${encodeURIComponent(keyword)}${periodQuery}`;
+        window.open(url, '_blank', 'noopener,noreferrer');
     };
 
     // --- ANALYZER LOGIC ---
@@ -136,6 +141,14 @@ const ToolSpy = () => {
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) {
+                setErrorMsg('Gunakan gambar JPG, PNG, WebP, atau GIF.');
+                return;
+            }
+            if (file.size > 8_000_000) {
+                setErrorMsg('Ukuran screenshot maksimal 8 MB.');
+                return;
+            }
             const url = URL.createObjectURL(file);
             setImagePreview(url); // Set new URL (cleanup handled by useEffect)
             
@@ -161,112 +174,40 @@ const ToolSpy = () => {
             const ai = new OpenAIClient();
             const prompt = `
 ROLE:
-You are an Ads Intelligence Analyst for Indonesia.
-Your job is to DETECT, LABEL, and TRANSLATE winning competitor ads into EXECUTABLE replication instructions.
+Kamu adalah analis struktur kreatif iklan. Kamu hanya menerima screenshot yang diunggah pengguna; kamu tidak memiliki akses langsung ke Meta Ads Library, TikTok Ads, durasi penayangan, spend, hasil, atau profit.
 
-LANGUAGE RULES (STRICT):
-- Use **Bahasa Indonesia Membumi** (Natural, Daily Conversation Style).
-- Avoid corporate/formal jargon (e.g., instead of "Visual aesthetics are pleasing", say "Visualnya enak dilihat dan rapi").
-- Tone: Like a senior strategist talking to a friend. Direct but grounded.
+ATURAN PENTING:
+- Jawab dalam Bahasa Indonesia yang sederhana.
+- Jangan menyebut iklan sebagai pemenang, jangan menebak umur iklan, performa, atau profit.
+- Analisis hanya elemen yang benar-benar terlihat. Jika informasi tidak tampak, tulis "Tidak terlihat pada screenshot" atau pilih UNKNOWN.
+- Jangan mengarang target audiens, testimoni, harga, stok, klaim produk, atau isi percakapan.
+- Berikan ide adaptasi struktur secara umum; jangan menyarankan menyalin aset, teks, merek, atau testimoni pihak lain.
 
-Market Context:
-- Indonesia
-- Target buyer: Emak-emak / Umum
-- Funnel: CTWA (Click to WhatsApp)
-
-Winning logic [LOCKED]:
-Relate -> Aman -> Kepakai -> Masuk Akal -> Chat
-
----
-
-INPUT:
-User provides screenshot or link from Ads Library / TikTok Ads.
-
----
-
-STEP 1 - AD STATUS CLASSIFICATION (WAJIB)
-Determine status based on longevity (guess from context/visual style):
-- ABADI: Likely Active >= 90 days (Winner)
-- BERTAHAN: Likely Active 30-89 days
-- CEPAT MATI: Likely Active < 30 days (Testing)
-
----
-
-STEP 2 - PROFIT PROBABILITY
-Estimate likelihood of profitability based on Offer & Visuals.
-- Classify as: HIGH / MEDIUM / LOW
-
----
-
-STEP 3 - HOOK ANALYSIS
-Choose ONE specific hook:
-- Visual Variety (banyak warna/model)
-- Visual Proof (dipakai real/testimoni)
-- Visual Texture (zoom bahan/detail)
-- Visual Contrast (before-after)
-- Question / Masalah (Relate)
-
----
-
-STEP 4 - ANGLE CLASSIFICATION
-Choose ONE primary angle:
-- Kepakai Harian (Daily Use)
-- Solusi Masalah (Problem Solving)
-- Aman / Terpercaya (Trust)
-- Harga / Hemat (Value)
-
----
-
-STEP 5 - FUNNEL
-CTWA / CHECKOUT / MIXED.
-
----
-
-STEP 6 - WHY THIS AD WINS (MANDATORY)
-Provide 3 short bullets explaining WHY in simple Indonesian.
-Example: "Modelnya wajah lokal banget, jadi bunda-bunda merasa relate."
-
----
-
-STEP 7 - ATM REPLICATION (EXECUTION MODE)
-Convert insight into DO / DON'T instructions.
-Language must be actionable.
-
----
-
-STEP 8 - ACTION DECISION
-- ADAPT (Tiru Polanya)
-- STUDY (Pelajari Dulu)
-- IGNORE (Jangan Tiru)
-
----
+TASK:
+1. Klasifikasikan hook, angle, gaya penawaran, dan funnel hanya jika terlihat; jika tidak, gunakan UNKNOWN.
+2. Berikan 3 observasi yang dapat ditunjuk pada screenshot, bukan dugaan tentang hasil iklan.
+3. Berikan saran adaptasi yang bisa diuji dengan produk dan klaim milik pengguna.
+4. Pilih langkah berikutnya: ADAPT hanya untuk menguji pola kreatif, STUDY jika bukti visual terbatas, IGNORE jika tidak relevan. Ini bukan keputusan performa iklan.
 
 OUTPUT FORMAT (JSON ONLY):
 {
-  "status": "ABADI" | "BERTAHAN" | "CEPAT MATI",
-  "active_days": "X hari (estimasi)",
-  "profit_likelihood": "HIGH" | "MEDIUM" | "LOW",
   "structure": {
     "hook_type": "...",
     "angle": "...",
     "offer_style": "...",
-    "funnel_type": "..."
+    "funnel_type": "UNKNOWN"
   },
-  "why_winning": [
-    "Alasan 1 (Bahasa santai)",
-    "Alasan 2",
-    "Alasan 3"
-  ],
+  "observations": ["Observasi visual 1", "Observasi visual 2", "Observasi visual 3"],
   "replication_atm": {
-    "do": ["Instruksi 1 (Bahasa santai)", "Instruksi 2"],
-    "dont": ["Larangan 1 (Bahasa santai)", "Larangan 2"]
+    "do": ["Pola yang bisa diuji tanpa menyalin aset"],
+    "dont": ["Hal yang jangan diasumsikan atau ditiru"]
   },
   "action_decision": "ADAPT" | "STUDY" | "IGNORE"
 }
             `;
 
             const response = await ai.models.generateContent({
-                model: 'gpt-4.1-mini',
+                model: 'gpt-6-luna',
                 contents: {
                     parts: [
                         { inlineData: { mimeType: imageMime, data: imageBase64 } }, // Use dynamic mime
@@ -279,7 +220,10 @@ OUTPUT FORMAT (JSON ONLY):
             // Clean JSON just in case
             let rawText = response.text;
             rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-            const result = JSON.parse(rawText);
+            const result = JSON.parse(rawText) as SpyAnalysisResult;
+            if (!result?.structure || !Array.isArray(result.observations) || !Array.isArray(result.replication_atm?.do) || !Array.isArray(result.replication_atm?.dont) || !['hook_type', 'angle', 'offer_style', 'funnel_type'].every(key => typeof (result.structure as any)[key] === 'string') || !['ADAPT', 'STUDY', 'IGNORE'].includes(result.action_decision)) {
+                throw new Error('Format hasil AI tidak lengkap. Coba analisis ulang.');
+            }
             setSpyResult(result);
 
         } catch (error) {
@@ -298,8 +242,9 @@ OUTPUT FORMAT (JSON ONLY):
                 <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-white">
                     <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                         <Search className="w-5 h-5 text-fb-blue" />
-                        1. Cari Kompetitor (Search)
+                        1. Cari Referensi Iklan
                     </h2>
+                    <p className="text-sm text-gray-500 mt-1">Pencarian dibuka di platform; data iklan tidak ditarik ke aplikasi.</p>
                 </div>
                 
                 <div className="p-6">
@@ -310,7 +255,7 @@ OUTPUT FORMAT (JSON ONLY):
                                 type="text" 
                                 value={keyword}
                                 onChange={(e) => setKeyword(e.target.value)}
-                                placeholder="Contoh: Obat Jerawat, Peninggi Badan, nama Brand..."
+                                placeholder="Contoh: nama produk, kategori, atau merek"
                                 className="w-full pl-4 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-fb-blue outline-none text-[15px]"
                                 onKeyDown={(e) => e.key === 'Enter' && handleFbSearch()}
                             />
@@ -332,7 +277,7 @@ OUTPUT FORMAT (JSON ONLY):
                     <div className="bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200 grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div><label className="text-xs font-bold text-gray-500">Status</label><select value={status} onChange={(e)=>setStatus(e.target.value as any)} className="w-full p-2 border rounded mt-1 text-sm bg-white"><option value="active">🟢 Aktif Saja</option><option value="all">⚪ Semua</option></select></div>
                         <div><label className="text-xs font-bold text-gray-500">Format</label><select value={mediaType} onChange={(e)=>setMediaType(e.target.value as any)} className="w-full p-2 border rounded mt-1 text-sm bg-white"><option value="all">Semua</option><option value="video">Video Only</option><option value="image">Image Only</option></select></div>
-                        <div><label className="text-xs font-bold text-gray-500">Periode</label><select value={dateFilter} onChange={(e)=>setDateFilter(e.target.value as any)} className="w-full p-2 border rounded mt-1 text-sm bg-white"><option value="last_90_days">3 Bulan (Filter Winning)</option><option value="any">Semua Waktu</option></select></div>
+                        <div><label className="text-xs font-bold text-gray-500">Periode</label><select value={dateFilter} onChange={(e)=>setDateFilter(e.target.value as any)} className="w-full p-2 border rounded mt-1 text-sm bg-white"><option value="last_90_days">90 hari terakhir</option><option value="any">Tanpa filter tanggal aplikasi</option></select><p className="text-[10px] text-gray-500 mt-1">Periksa lagi filter tanggal di situs tujuan.</p></div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
@@ -347,9 +292,9 @@ OUTPUT FORMAT (JSON ONLY):
                 <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-white">
                     <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                         <Brain className="w-5 h-5 text-purple-600" />
-                        2. Analisa Pemenang (AI Analyst)
+                        2. Bedah Struktur Kreatif (AI)
                     </h2>
-                    <p className="text-sm text-gray-500 mt-1">Upload screenshot Ads Library atau <b>Paste (Ctrl+V)</b> langsung di sini.</p>
+                    <p className="text-sm text-gray-500 mt-1">Unggah screenshot atau <b>paste (Ctrl+V)</b>. AI tidak dapat melihat data tayang, umur iklan, spend, atau profit.</p>
                 </div>
 
                 <div className="p-6 grid grid-cols-1 md:grid-cols-12 gap-6">
@@ -370,7 +315,7 @@ OUTPUT FORMAT (JSON ONLY):
                                 <img src={imagePreview} className={`w-full h-full object-contain ${isAnalyzing ? 'opacity-50' : ''}`} alt="Ad Preview"/>
                                 {isAnalyzing && <div className="absolute inset-0 flex items-center justify-center"><div className="animate-spin w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full"></div></div>}
                                 {!isAnalyzing && (
-                                    <button onClick={() => {setImagePreview(null); setSpyResult(null);}} className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"><X className="w-4 h-4"/></button>
+                                    <button onClick={() => {setImagePreview(null); setImageBase64(null); setSpyResult(null); setErrorMsg(null);}} className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"><X className="w-4 h-4"/></button>
                                 )}
                             </div>
                          )}
@@ -394,26 +339,15 @@ OUTPUT FORMAT (JSON ONLY):
                             </div>
                         ) : (
                             <div className="space-y-4 animate-fade-in">
-                                {/* HEADER STATUS */}
-                                <div className={`p-4 rounded-xl border-l-4 flex justify-between items-center shadow-sm ${
-                                    spyResult.status === 'ABADI' ? 'bg-green-50 border-green-500' : 
-                                    spyResult.status === 'BERTAHAN' ? 'bg-yellow-50 border-yellow-500' : 'bg-red-50 border-red-500'
-                                }`}>
+                                {/* ANALYSIS SCOPE */}
+                                <div className="p-4 rounded-xl border-l-4 border-blue-500 bg-blue-50 shadow-sm flex flex-wrap justify-between items-center gap-3">
                                     <div>
-                                        <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500">Status Iklan</div>
-                                        <div className={`text-2xl font-black ${
-                                            spyResult.status === 'ABADI' ? 'text-green-700' : 
-                                            spyResult.status === 'BERTAHAN' ? 'text-yellow-700' : 'text-red-700'
-                                        }`}>{spyResult.status}</div>
-                                        <div className="text-xs font-medium text-gray-600 mt-1">
-                                            Aktif: {spyResult.active_days} • Profit: {spyResult.profit_likelihood}
-                                        </div>
+                                        <div className="text-[10px] font-bold uppercase tracking-wider text-blue-700">Lingkup analisis</div>
+                                        <div className="text-lg font-black text-blue-900">Struktur visual</div>
+                                        <div className="text-xs font-medium text-gray-700 mt-1">Umur iklan dan profit tidak dapat disimpulkan dari screenshot.</div>
                                     </div>
-                                    <div className={`px-3 py-1 rounded text-xs font-bold uppercase ${
-                                        spyResult.action_decision === 'ADAPT' ? 'bg-green-200 text-green-800' : 
-                                        spyResult.action_decision === 'STUDY' ? 'bg-yellow-200 text-yellow-800' : 'bg-gray-200 text-gray-800'
-                                    }`}>
-                                        KEPUTUSAN: {spyResult.action_decision}
+                                    <div className="px-3 py-1 rounded bg-white border border-blue-200 text-xs font-bold text-blue-800">
+                                        LANGKAH: {spyResult.action_decision === 'ADAPT' ? 'UJI ADAPTASI' : spyResult.action_decision === 'STUDY' ? 'PELAJARI' : 'LEWATI'}
                                     </div>
                                 </div>
 
@@ -437,13 +371,13 @@ OUTPUT FORMAT (JSON ONLY):
                                     </div>
                                 </div>
 
-                                {/* WHY WINNING */}
+                                {/* OBSERVATIONS */}
                                 <div className="bg-purple-50 p-4 rounded-xl border border-purple-100">
                                      <h4 className="font-bold text-purple-800 text-sm mb-2 flex items-center gap-2">
-                                        <Lightbulb className="w-4 h-4" /> Kenapa Iklan Ini Menang?
+                                        <Lightbulb className="w-4 h-4" /> Yang Terlihat di Screenshot
                                      </h4>
                                      <ul className="space-y-1">
-                                        {spyResult.why_winning.map((reason, idx) => (
+                                        {spyResult.observations.map((reason, idx) => (
                                             <li key={idx} className="text-sm text-purple-900 flex gap-2 items-start">
                                                 <span className="mt-1.5 w-1 h-1 bg-purple-500 rounded-full flex-shrink-0"></span>
                                                 {reason}
@@ -455,7 +389,7 @@ OUTPUT FORMAT (JSON ONLY):
                                 {/* REPLICATION ATM (DO / DONT) */}
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="bg-green-50 p-3 rounded-xl border border-green-100">
-                                        <h4 className="font-bold text-green-800 text-xs mb-2 flex items-center gap-1"><ThumbsUp className="w-3 h-3"/> DO (Tiru Ini)</h4>
+                                        <h4 className="font-bold text-green-800 text-xs mb-2 flex items-center gap-1"><ThumbsUp className="w-3 h-3"/> DO (Uji Polanya)</h4>
                                         <ul className="space-y-2">
                                             {spyResult.replication_atm.do.map((item, idx) => (
                                                 <li key={idx} className="text-xs text-green-900 leading-snug flex gap-1.5 items-start">
@@ -478,13 +412,7 @@ OUTPUT FORMAT (JSON ONLY):
                                     </div>
                                 </div>
                                 
-                                {spyResult.status === 'CEPAT MATI' && (
-                                    <div className="flex items-center gap-2 text-xs text-red-600 bg-red-50 p-2 rounded border border-red-100 font-medium">
-                                        <ShieldAlert className="w-4 h-4"/>
-                                        Warning: Iklan ini belum terbukti. Jangan ditiru mentah-mentah.
-                                    </div>
-                                )}
-                            </div>
+                                            </div>
                         )}
                     </div>
                 </div>

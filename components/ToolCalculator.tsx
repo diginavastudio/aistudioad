@@ -40,13 +40,15 @@ const ToolCalculator = () => {
          const clean = val.replace(/[^0-9.]/g, '');
          const parts = clean.split('.');
          if (parts.length > 2) return;
-         setter(Number(clean));
+         setter(Math.min(100, Math.max(0, Number(clean))));
     };
 
 
     // --- LOGIC UTAMA ---
-    const effectiveRevenue = price * ((100 - returnRate) / 100);
-    const realMarginPerUnit = Math.max(0, effectiveRevenue - cogs);
+    const normalizedReturnRate = Math.min(100, Math.max(0, Number(returnRate) || 0));
+    const normalizedClosingRate = Math.min(100, Math.max(0, Number(planningClosingRate) || 0));
+    const effectiveRevenue = price * ((100 - normalizedReturnRate) / 100);
+    const realMarginPerUnit = effectiveRevenue - cogs;
     const bepCPP = realMarginPerUnit; 
     const beROAS = realMarginPerUnit > 0 ? effectiveRevenue / realMarginPerUnit : 0;
 
@@ -56,8 +58,8 @@ const ToolCalculator = () => {
         targetProfitPerSale = realMarginPerUnit * 0.20; 
     }
     const maxAllowableCPP = Math.max(0, realMarginPerUnit - targetProfitPerSale);
-    const targetCprPlanning = maxAllowableCPP * (planningClosingRate / 100);
-    const projectedCPP = planningClosingRate > 0 ? planningAdCpr / (planningClosingRate / 100) : 0;
+    const targetCprPlanning = maxAllowableCPP * (normalizedClosingRate / 100);
+    const projectedCPP = planningClosingRate > 0 ? planningAdCpr / (normalizedClosingRate / 100) : 0;
     const projectedProfitPerUnit = realMarginPerUnit - projectedCPP;
 
     // Actual
@@ -80,7 +82,9 @@ const ToolCalculator = () => {
     let riskMessage = "";
     
     if (profitMode === 'ACTUAL') {
-        if (spend > 0 && leads > 0) {
+        if (realClosing > leads) {
+            riskMessage = 'Jumlah closing melebihi jumlah lead. Periksa kembali input.';
+        } else if (spend > 0 && leads > 0) {
              if (netProfit > 0) {
                  verdict = 'PROFIT';
                  riskMessage = `Potensi Laba +${formatRp(profitPerMillion)} per 1 Juta Spend`;
@@ -95,10 +99,10 @@ const ToolCalculator = () => {
         }
     } else {
         if (planningAdCpr > 0 && targetCprPlanning > 0) {
-            const absoluteMaxCPR = bepCPP * (planningClosingRate / 100);
+            const absoluteMaxCPR = bepCPP * (normalizedClosingRate / 100);
             if (planningAdCpr > absoluteMaxCPR) {
                 verdict = 'KILL';
-                const projectedCPP = planningAdCpr / (planningClosingRate/100);
+                const projectedCPP = planningAdCpr / (normalizedClosingRate/100);
                 const projectedLossPerSale = projectedCPP - bepCPP;
                 const lossRatio = projectedLossPerSale / projectedCPP;
                 const lossPerMillion = lossRatio * 1000000;
@@ -108,7 +112,7 @@ const ToolCalculator = () => {
                 riskMessage = "Di bawah target profit, tapi belum boncos total.";
             } else {
                 verdict = 'SAFE';
-                riskMessage = "Aman untuk dijalankan.";
+                riskMessage = "CPR input memenuhi target pada simulasi ini; hasil aktual bisa berbeda.";
             }
         }
     }
@@ -124,7 +128,7 @@ const ToolCalculator = () => {
 📊 *ROAS:* ${actualROAS.toFixed(2)}x (Min: ${beROAS.toFixed(2)}x)
 💵 *Net Profit:* ${formatRp(netProfit)}
 📝 *Rekomendasi:*
-${verdict === 'KILL' ? '⛔ MATIKAN SEGERA (Boncos Total)' : verdict === 'WARNING' ? '⚠️ MONITOR KETAT (Tipis)' : '✅ LANJUTKAN (Profit)'}
+${verdict === 'KILL' ? 'CPP melewati BEP estimasi; tinjau asumsi dan biaya lain.' : verdict === 'WARNING' ? 'Perlu ditinjau terhadap target bisnis.' : 'Hasil memenuhi asumsi target yang dimasukkan.'}
         `.trim();
         navigator.clipboard.writeText(text);
         setCopied(true);
@@ -138,15 +142,18 @@ ${verdict === 'KILL' ? '⛔ MATIKAN SEGERA (Boncos Total)' : verdict === 'WARNIN
                     <div>
                         <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                             <Calculator className="w-5 h-5 text-gray-700" />
-                            Kalkulator Kebal Boncos v3.5
+                            Kalkulator Estimasi Iklan
                         </h2>
                         <p className="text-xs text-gray-500 mt-1">
-                            {profitMode === 'ACTUAL' ? 'Audit performa real-time (P&L).' : 'Simulasi sebelum iklan jalan.'}
+                            {profitMode === 'ACTUAL' ? 'Estimasi dari spend, closing, harga, HPP, dan retur yang Anda masukkan.' : 'Simulasi berdasarkan asumsi produk dan closing rate.'}
                         </p>
                     </div>
                 </div>
 
                 <div className="p-5">
+                    <div className="mb-5 rounded-lg border border-blue-100 bg-blue-50 p-3 text-xs text-blue-900">
+                        Hasil ini estimasi. Perhitungan belum memasukkan ongkir, biaya platform/pembayaran, fulfillment, pajak, diskon, atau biaya retur lain. Pastikan data spend dan closing memakai periode yang sepadan.
+                    </div>
                     {/* TABS HEADER */}
                     <div className="mb-6 bg-gray-100 p-1.5 rounded-lg flex gap-1">
                         <button onClick={() => setProfitMode('ACTUAL')} className={`flex-1 py-2 px-2 text-xs md:text-sm font-bold rounded-md transition-all ${profitMode === 'ACTUAL' ? 'bg-white shadow-sm text-purple-600 border border-purple-100 ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}>⚡ Audit: Data Aktual</button>
@@ -171,7 +178,7 @@ ${verdict === 'KILL' ? '⛔ MATIKAN SEGERA (Boncos Total)' : verdict === 'WARNIN
                                         </div>
                                         <div>
                                             <div className="text-[10px] font-semibold text-gray-400 mb-1">Estimasi Retur</div>
-                                            <div className="relative"><input type="number" step="0.1" value={returnRate} onChange={(e) => handleDecimalChange(e.target.value, setReturnRate)} className="w-full px-3 py-1.5 rounded border border-gray-300 text-sm focus:border-red-500 outline-none bg-white text-center" /><span className="absolute right-3 top-1.5 text-gray-400 text-xs">%</span></div>
+                                            <div className="relative"><input type="number" step="0.1" value={normalizedReturnRate} onChange={(e) => handleDecimalChange(e.target.value, setReturnRate)} className="w-full px-3 py-1.5 rounded border border-gray-300 text-sm focus:border-red-500 outline-none bg-white text-center" /><span className="absolute right-3 top-1.5 text-gray-400 text-xs">%</span></div>
                                         </div>
                                     </div>
                                 </div>
@@ -192,7 +199,7 @@ ${verdict === 'KILL' ? '⛔ MATIKAN SEGERA (Boncos Total)' : verdict === 'WARNIN
                                 <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
                                     <label className="block text-xs font-bold text-blue-800 uppercase tracking-wide mb-3 flex items-center gap-1"><Search className="w-3 h-3" /> Simulasi Lapangan</label>
                                     <div className="space-y-3">
-                                        <div><div className="text-[10px] font-semibold text-blue-600 mb-1">Target Closing Rate (Tim CS)</div><div className="relative"><input type="number" step="0.1" value={planningClosingRate} onChange={(e) => handleDecimalChange(e.target.value, setPlanningClosingRate)} className="w-full px-3 py-2 rounded border border-blue-300 text-sm focus:border-blue-600 outline-none font-medium bg-white text-center" /><span className="absolute right-3 top-2 text-blue-400 text-xs">%</span></div></div>
+                                        <div><div className="text-[10px] font-semibold text-blue-600 mb-1">Target Closing Rate (Tim CS)</div><div className="relative"><input type="number" step="0.1" value={normalizedClosingRate} onChange={(e) => handleDecimalChange(e.target.value, setPlanningClosingRate)} className="w-full px-3 py-2 rounded border border-blue-300 text-sm focus:border-blue-600 outline-none font-medium bg-white text-center" /><span className="absolute right-3 top-2 text-blue-400 text-xs">%</span></div></div>
                                         <div><div className="text-[10px] font-semibold text-blue-600 mb-1">Tes CPR (Jika biaya segini...)</div><div className="relative"><span className="absolute left-3 top-2.5 text-blue-500 text-xs font-bold">Rp</span><input type="text" value={formatNumberInput(planningAdCpr)} onChange={(e) => handleNumberChange(e.target.value, setPlanningAdCpr)} className="w-full pl-9 pr-3 py-2 rounded border border-blue-300 text-sm focus:border-blue-600 outline-none font-bold bg-white text-blue-900" placeholder="0" /></div></div>
                                     </div>
                                 </div>
@@ -216,7 +223,7 @@ ${verdict === 'KILL' ? '⛔ MATIKAN SEGERA (Boncos Total)' : verdict === 'WARNIN
 
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
                                     <div className="bg-white/60 p-3 rounded-lg border border-black/5">
-                                        <div className="text-[10px] font-bold text-gray-500 uppercase flex items-center gap-1 mb-1"><Target className="w-3 h-3" /> CPR {profitMode === 'ACTUAL' ? '(Real)' : '(Target)'}</div>
+                                        <div className="text-[10px] font-bold text-gray-500 uppercase flex items-center gap-1 mb-1"><Target className="w-3 h-3" /> CPR {profitMode === 'ACTUAL' ? '(Input)' : '(Target)'}</div>
                                         <div className={`text-lg md:text-xl font-black ${ profitMode === 'ACTUAL' ? (actualCPR > targetCprPlanning ? 'text-red-600' : 'text-green-600') : 'text-gray-800'}`}>{formatRp(profitMode === 'ACTUAL' ? actualCPR : targetCprPlanning)}</div>
                                     </div>
                                     <div className="bg-white/60 p-3 rounded-lg border border-black/5">
@@ -224,16 +231,18 @@ ${verdict === 'KILL' ? '⛔ MATIKAN SEGERA (Boncos Total)' : verdict === 'WARNIN
                                         <div className={`text-lg md:text-xl font-black ${ profitMode === 'ACTUAL' ? (actualCPP > bepCPP ? 'text-red-600' : 'text-green-600') : 'text-gray-800'}`}>{formatRp(profitMode === 'ACTUAL' ? actualCPP : maxAllowableCPP)}</div>
                                     </div>
                                     <div className="bg-white/60 p-3 rounded-lg border border-black/5 md:col-span-1 col-span-2">
-                                        <div className="text-[10px] font-bold text-gray-500 uppercase flex items-center gap-1 mb-1"><TrendingUp className="w-3 h-3" /> ROAS</div>
+                                        <div className="text-[10px] font-bold text-gray-500 uppercase flex items-center gap-1 mb-1"><TrendingUp className="w-3 h-3" /> ROAS bersih (estimasi)</div>
                                         <div className="flex items-baseline gap-2">
-                                            <div className={`text-lg md:text-xl font-black ${ profitMode === 'ACTUAL' ? (actualROAS >= beROAS ? 'text-green-600' : 'text-red-600') : 'text-gray-400'}`}>{profitMode === 'ACTUAL' ? actualROAS.toFixed(2) + 'x' : '--'}</div>
+                                            <div className={`text-lg md:text-xl font-black ${ profitMode === 'ACTUAL' ? (realMarginPerUnit > 0 && actualROAS >= beROAS ? 'text-green-600' : 'text-red-600') : 'text-gray-400'}`}>{profitMode === 'ACTUAL' ? actualROAS.toFixed(2) + 'x' : '--'}</div>
                                             {beROAS > 0 && (<div className="text-[10px] text-gray-500 font-medium bg-gray-100 px-1.5 rounded">Min: {beROAS.toFixed(2)}x</div>)}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="mt-auto border-t border-black/5 pt-4 flex justify-between items-center">
-                                     {verdict !== 'UNKNOWN' ? (
+                                     {profitMode === 'ACTUAL' && realClosing > leads ? (
+                                        <div className="text-sm font-bold text-red-700 bg-red-50 border border-red-200 rounded-lg p-3">Closing tidak boleh melebihi jumlah lead. Periksa input untuk melihat hasil estimasi.</div>
+                                     ) : verdict !== 'UNKNOWN' ? (
                                         <div className="flex items-center gap-3">
                                             <div className={`p-2 rounded-full ${ verdict === 'KILL' ? 'bg-red-100 text-red-600' : verdict === 'WARNING' ? 'bg-yellow-100 text-yellow-600' : 'bg-green-100 text-green-600'}`}>
                                                 {verdict === 'KILL' && <Skull className="w-6 h-6" />}
@@ -241,7 +250,7 @@ ${verdict === 'KILL' ? '⛔ MATIKAN SEGERA (Boncos Total)' : verdict === 'WARNIN
                                                 {(verdict === 'SAFE' || verdict === 'PROFIT') && <ShieldCheck className="w-6 h-6" />}
                                             </div>
                                             <div>
-                                                <div className={`text-lg font-black uppercase leading-none ${ verdict === 'KILL' ? 'text-red-600' : verdict === 'WARNING' ? 'text-yellow-600' : 'text-green-600'}`}>{verdict === 'PROFIT' ? 'IKLAN WINNING' : verdict === 'SAFE' ? 'AMAN DIJALANKAN' : verdict === 'WARNING' ? 'WASPADA (CEK CS)' : 'MATIKAN SEKARANG'}</div>
+                                                <div className={`text-lg font-black uppercase leading-none ${ verdict === 'KILL' ? 'text-red-600' : verdict === 'WARNING' ? 'text-yellow-600' : 'text-green-600'}`}>{verdict === 'PROFIT' ? 'HASIL POSITIF (EST.)' : verdict === 'SAFE' ? 'DI BAWAH TARGET' : verdict === 'WARNING' ? 'PERLU DITINJAU' : 'DI ATAS BEP ESTIMASI'}</div>
                                                 <div className={`text-xs font-bold mt-1 ${ verdict === 'KILL' ? 'text-red-800' : verdict === 'WARNING' ? 'text-yellow-800' : 'text-green-800'}`}>{riskMessage}</div>
                                             </div>
                                         </div>

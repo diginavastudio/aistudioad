@@ -35,24 +35,9 @@ const Navbar: React.FC<NavbarProps> = ({ appMode, activeTab, onTabChange }) => {
   return (
     <div className="fixed top-0 left-0 right-0 h-14 bg-white shadow-sm flex items-center justify-between px-4 z-50 border-b border-fb-stroke">
       {/* Left: Logo */}
-      <div className="flex items-center gap-2 w-[25%]">
-        <div className="w-10 h-10 bg-fb-blue rounded-full flex items-center justify-center text-white font-bold text-2xl tracking-tighter cursor-pointer hover:opacity-90">
-          M
-        </div>
-        <div className="hidden xl:flex items-center bg-fb-bg px-3 py-2 rounded-full w-full max-w-[240px]">
-          <Search className="w-4 h-4 text-fb-secondary mr-2" />
-          <input 
-            type="text" 
-            placeholder={
-                appMode === 'TACTICAL' ? "Cari keputusan..." : 
-                appMode === 'DAILY' ? "Cek jadwal..." : 
-                appMode === 'CREATIVE_LAB' ? "Cari aset..." : 
-                appMode === 'TOOLKIT' ? "Cari tool..." : "Cari panduan..."
-            }
-            className="bg-transparent border-none outline-none text-sm placeholder-fb-secondary w-full"
-            disabled
-          />
-        </div>
+      <div className="flex items-center gap-2 w-[25%] min-w-[150px]">
+        <div className="w-10 h-10 bg-fb-blue rounded-xl flex items-center justify-center text-white font-bold text-sm tracking-tight" aria-hidden="true">AI</div>
+        <span className="hidden sm:block font-bold text-sm text-gray-800">AI Studio Ads</span>
       </div>
 
       {/* Middle: Main Navigation Tabs */}
@@ -108,18 +93,9 @@ const Navbar: React.FC<NavbarProps> = ({ appMode, activeTab, onTabChange }) => {
         
       </div>
 
-      {/* Right: Actions */}
-      <div className="flex items-center justify-end gap-2 w-[25%]">
-        <div className="hidden md:flex w-10 h-10 bg-fb-bg rounded-full items-center justify-center cursor-pointer hover:bg-fb-hover">
-          <Grip className="w-5 h-5 text-black" />
-        </div>
-        <div className="w-10 h-10 bg-fb-bg rounded-full flex items-center justify-center cursor-pointer hover:bg-fb-hover relative">
-          <MessageCircle className="w-5 h-5 text-black" />
-          <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">AI</div>
-        </div>
-        <div className="w-10 h-10 overflow-hidden rounded-full border border-fb-stroke cursor-pointer relative">
-            <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Felix" alt="Profile" className="w-full h-full object-cover" />
-        </div>
+      {/* Product label */}
+      <div className="flex items-center justify-end w-[25%] min-w-[110px]">
+        <span className="hidden sm:inline-flex items-center rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">Model: GPT-6 Luna</span>
       </div>
     </div>
   );
