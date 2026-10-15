@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   }
   const upstream = await fetch('https://api.openai.com/v1/responses', {
    method:'POST',headers:{'Authorization':`Bearer ${apiKey}`,'Content-Type':'application/json'},
-   body:JSON.stringify({model:'gpt-4.1-mini',store:false,max_output_tokens:6000,instructions:typeof body.config?.systemInstruction === 'string' ? body.config.systemInstruction : undefined,input:[{role:'user',content}]}),
+   body:JSON.stringify({model:'gpt-6-luna',reasoning:{effort:'none'},store:false,max_output_tokens:6000,instructions:typeof body.config?.systemInstruction === 'string' ? body.config.systemInstruction : undefined,input:[{role:'user',content}]}),
    signal:AbortSignal.timeout(90000)
   });
   const data = await upstream.json() as any;
