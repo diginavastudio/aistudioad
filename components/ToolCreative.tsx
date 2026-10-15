@@ -73,11 +73,12 @@ const ToolCreative: React.FC<ToolCreativeProps> = ({ activeTab, onTabChange }) =
     // --- 🟢 GENERATOR STATE (v27 - HARD RESET FOR STABILITY) ---
     // Changed all keys to 'v27_' to flush old corrupted data
     const [product, setProduct] = useStickyState('', 'v27_product');
-    const [targetPerson, setTargetPerson] = useStickyState('Umum / Emak-emak', 'v27_target');
+    const [targetPerson, setTargetPerson] = useStickyState('Semua kalangan', 'v28_target');
     const [painPoint, setPainPoint] = useStickyState('', 'v27_pain_point');
     const [price, setPrice] = useStickyState('', 'v27_price');
     const [offerType, setOfferType] = useStickyState('Satuan', 'v27_offer_type');
-    const [bundleDetail, setBundleDetail] = useStickyState('', 'v27_bundle_detail');
+    const [bundleDetail, setBundleDetail] = useStickyState('', 'v28_bundle_detail');
+    const [offerConfirmed, setOfferConfirmed] = useState(false);
     const [narrativeFocus, setNarrativeFocus] = useStickyState('Relate (Rutinitas)', 'v27_focus');
     const [moment, setMoment] = useStickyState('Tanpa Momen', 'v27_moment');
     const [customMoment, setCustomMoment] = useStickyState('', 'v27_custom_moment');
@@ -97,19 +98,16 @@ const ToolCreative: React.FC<ToolCreativeProps> = ({ activeTab, onTabChange }) =
     const [copiedId, setCopiedId] = useState<string | null>(null);
 
     // --- 🔵 SIMULATOR STATE (v27 - HARD RESET) ---
-    const [simPageName, setSimPageName] = useStickyState('Toko Terpercaya', 'v27_sim_page');
+    const [simPageName, setSimPageName] = useStickyState('', 'v28_sim_page');
     const [simMediaUrl, setSimMediaUrl] = useState<string | null>(null);
     const [simMediaType, setSimMediaType] = useState<'image' | 'video'>('image');
     const [simThumbUrl, setSimThumbUrl] = useState<string | null>(null); 
     
-    const [simBody, setSimBody] = useStickyState('**Pagi-pagi kok udah pusing?** 🕘\n\nNiatnya rapi-rapi malah jadi emosi sendiri.\nSekarang urusan rumah jadi lebih sat-set. 👍\n\nMau lihat caranya? 💬', 'v27_sim_body');
-    const [simHeadline, setSimHeadline] = useStickyState('Promo Spesial Hari Ini 🔥', 'v27_sim_head');
-    const [simDescription, setSimDescription] = useStickyState('Bisa COD / Bayar Ditempat 📦', 'v27_sim_desc');
-    const [simCta, setSimCta] = useStickyState('WhatsApp', 'v27_sim_cta');
+    const [simBody, setSimBody] = useStickyState('', 'v28_sim_body');
+    const [simHeadline, setSimHeadline] = useStickyState('', 'v28_sim_head');
+    const [simDescription, setSimDescription] = useStickyState('', 'v28_sim_desc');
+    const [simCta, setSimCta] = useStickyState('WhatsApp', 'v28_sim_cta');
     
-    const [simLikes, setSimLikes] = useStickyState('159', 'v27_sim_likes');
-    const [simComments, setSimComments] = useStickyState('54', 'v27_sim_comments');
-    const [simShares, setSimShares] = useStickyState('1', 'v27_sim_shares');
 
     const [isPlaying, setIsPlaying] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -122,7 +120,7 @@ const ToolCreative: React.FC<ToolCreativeProps> = ({ activeTab, onTabChange }) =
             if (simThumbUrl) URL.revokeObjectURL(simThumbUrl);
             if (genVideoPreview) URL.revokeObjectURL(genVideoPreview); // Cleanup generator video
         };
-    }, []); 
+    }, [simMediaUrl, simThumbUrl, genVideoPreview]);
 
     // Helper: File to Base64
     const fileToBase64 = (file: File): Promise<string> => {
@@ -187,7 +185,7 @@ const ToolCreative: React.FC<ToolCreativeProps> = ({ activeTab, onTabChange }) =
             Example for 'Mainan': "Anak kecanduan HP susah dibilangin"
             `;
             const response = await ai.models.generateContent({
-                model: 'gpt-4.1-mini',
+                model: 'gpt-6-luna',
                 contents: { parts: [{ text: prompt }] },
             });
             const suggestion = response.text.trim();
@@ -216,20 +214,18 @@ const ToolCreative: React.FC<ToolCreativeProps> = ({ activeTab, onTabChange }) =
             Price: ${price}
             Target: Indonesia Market
 
-            Suggest ONE irresistible offer/bundle strategy to increase AOV (Average Order Value).
-            Keep it short (Max 5 words).
-            Examples:
-            - "Beli 2 Diskon 50%"
-            - "Paket Hemat Isi 3"
-            - "Beli 1 Gratis 1"
-            - "Bonus Pouch Eksklusif"
+            Suggest ONE hypothetical offer idea using only details supplied by the user.
+            Never invent a discount, price, bonus, stock, COD, guarantee, rating, or shipping benefit.
+            If key details are missing, suggest a non-numeric bundle idea and mark it as an idea to verify before advertising.
+            Keep it short (max 8 words).
             `;
             const response = await ai.models.generateContent({
-                model: 'gpt-4.1-mini',
+                model: 'gpt-6-luna',
                 contents: { parts: [{ text: prompt }] },
             });
             const suggestion = response.text.trim();
             setBundleDetail(suggestion);
+            setOfferConfirmed(false);
         } catch (e) {
             console.error(e);
             setError(e instanceof Error ? e.message : "Gagal cari ide offer.");
@@ -248,6 +244,10 @@ const ToolCreative: React.FC<ToolCreativeProps> = ({ activeTab, onTabChange }) =
             setError("SOP: Upload video dulu sebelum generate.");
             return;
         }
+        if (genMode === 'TEXT' && offerType === 'Paket / Bundle' && bundleDetail.trim() && !offerConfirmed) {
+            setError('Konfirmasi dulu bahwa harga, isi bundel, dan syarat penawaran ini benar dan tersedia.');
+            return;
+        }
 
         setIsGenerating(true);
         setError(null);
@@ -260,8 +260,8 @@ const ToolCreative: React.FC<ToolCreativeProps> = ({ activeTab, onTabChange }) =
              // HARDLOCK SYSTEM INSTRUCTION (Identical for both Text & Video)
              const systemInstruction = `
 ROLE:
-Senior Copywriter for Indonesian Moms (Emak-emak).
-Your philosophy: "Emak-emak paling males baca panjang-panjang."
+Senior copywriter berbahasa Indonesia. Gunakan Target Audience yang diisi pengguna; jangan mengasumsikan gender, usia, atau kelompok tertentu.
+Tulis dengan ringkas, alami, dan mudah dibaca.
 
 TASK:
 Generate 12 Ad Variations (3 per framework: CEP, PAS, BAB, AIDA).
@@ -271,7 +271,7 @@ HARDLOCK RULES (STRICTLY ENFORCED):
 1. HEADLINE
    - Length: Max 30-40 characters (approx 3-4 words).
    - Goal: Fully readable on mobile without truncation.
-   - Example: **Diskon 50% Hari Ini 🔥**
+   - Gunakan headline yang relevan dengan fakta produk. Jangan menciptakan angka diskon atau batas waktu.
 
 2. BODY COPY STRUCTURE:
    
@@ -304,15 +304,12 @@ HARDLOCK RULES (STRICTLY ENFORCED):
    - Use TOTAL 3-5 emojis in the whole ad body (distributed naturally).
    - Allowed: 🕘 ☀️ 🌙 🤔 😮‍💨 😓 👜 🧺 🙂 ✨ 👍 💬 📲
 
-3. DESCRIPTION
-   - Max 30 chars.
-   - Variations to rotate:
-     1. "Bisa COD / Bayar Ditempat"
-     2. "Rating Tinggi ⭐" (Do not use specific 4.9/5 unless user provided)
-     3. "Stok Terbatas"
-     4. "Promo Launching"
-     5. "Promo [Active Moment]" (If moment is set, e.g. "Promo Gajian")
-   - NOTE: Do NOT use "Gratis Ongkir" unless user specifically asked.
+3. DESCRIPTION AND CLAIMS
+   - Max 30 characters.
+   - Use only factual details explicitly supplied by the user.
+   - Never invent COD, rating, reviews, stock scarcity, deadlines, discounts, guarantees, shipping benefits, product results, or social proof.
+   - If no verified detail was supplied, return an empty description string.
+   - Treat a generated offer idea as unverified until the user confirms its exact terms.
 
 OUTPUT FORMAT (JSON ARRAY):
 [
@@ -320,7 +317,7 @@ OUTPUT FORMAT (JSON ARRAY):
     "strategy": "FRAMEWORK NAME",
     "body": "**Hook Text Here** 🕘\\n\\nRelatable problem text here.\\nSolution text here ✨\\n\\nSoft CTA text? 💬",
     "headline": "Short Headline 🔥",
-    "description": "Short social proof"
+    "description": "Verified product detail or empty string"
   }
 ]
 `;
@@ -331,9 +328,9 @@ OUTPUT FORMAT (JSON ARRAY):
                 // VIDEO MODE PROMPT
                 const videoPrompt = `
                 TASK:
-                1. Analyze the sampled video frames carefully. Audio is not provided. Do not infer spoken content. Identify the Product Name, the core Pain Point shown visually, and the Solution offered.
-                2. IGNORE the manual text inputs. Base your copywriting STRICTLY on the visual content of the video.
-                3. GENERATE 12 Ad Variations based on the video content, following the exact same HARDLOCK rules and JSON format as defined in the system instructions.
+                1. Analyze the sampled video frames. Audio is not provided; do not infer spoken content, unseen outcomes, price, stock, claims, or customer reactions.
+                2. Describe only what is visibly supported by the frames. If product identity or a benefit is uncertain, use neutral language rather than guessing.
+                3. GENERATE 12 Ad Variations based on the visible material, following the same safety rules and JSON format as the system instructions.
                 
                 The output MUST be the standard JSON array of 12 items.
                 `;
@@ -350,9 +347,10 @@ OUTPUT FORMAT (JSON ARRAY):
                 Product: ${product}
                 Target Audience: ${targetPerson}
                 Specific Pain Point: ${painPoint} (Integrate this if provided)
-                Price: ${price} (If price > 150000, emphasize QUALITY/VALUE. If < 100000, emphasize DEAL/HEMAT)
-                Offer: ${offerInfo}
-                Moment: ${activeMoment}
+                Price: ${price} (Sebutkan hanya sebagaimana diberikan. Jangan menyimpulkan kualitas, diskon, atau nilai hemat dari nominal harga saja.)
+                Offer: ${offerInfo} (use only if the user has confirmed its exact terms)
+                Moment: ${activeMoment} (do not imply an actual discount or deadline unless provided)
+                Factual product claims: use only Product, Pain Point, Price, and offer details explicitly supplied above; do not infer proof or outcomes.
                 Narrative Focus: ${narrativeFocus}
 
                 Generate 12 variations obeying the HARDLOCK character limits but flexible emoji placement (3-5 total).
@@ -361,7 +359,7 @@ OUTPUT FORMAT (JSON ARRAY):
              }
 
              const response = await ai.models.generateContent({
-                model: 'gpt-4.1-mini',
+                model: 'gpt-6-luna',
                 contents: { parts: contentParts },
                 config: { systemInstruction, responseMimeType: "application/json" }
              });
@@ -371,8 +369,8 @@ OUTPUT FORMAT (JSON ARRAY):
                 const cleanedJson = cleanJsonOutput(response.text);
                 const rawData = JSON.parse(cleanedJson);
                 
-                if (!Array.isArray(rawData)) {
-                    throw new Error("AI output is not an array");
+                if (!Array.isArray(rawData) || rawData.length !== 12 || rawData.some((item: any) => !item || typeof item.strategy !== 'string' || typeof item.body !== 'string' || typeof item.headline !== 'string' || typeof item.description !== 'string')) {
+                    throw new Error('Hasil AI belum lengkap atau formatnya tidak sesuai. Silakan generate ulang.');
                 }
 
                 const formattedData = rawData.map((item: any) => ({
@@ -446,8 +444,9 @@ OUTPUT FORMAT (JSON ARRAY):
 
     const sendToSimulator = (item: any) => {
         setSimBody(item.body);
-        setSimHeadline(item.headline || "Promo Terbatas Hari Ini 🔥");
-        setSimDescription(item.description || "Bisa COD / Bayar Ditempat 📦");
+        setSimHeadline(item.headline || '');
+        setSimDescription(item.description || '');
+        setOfferConfirmed(false);
         setSimCta("WhatsApp");
         if (onTabChange) onTabChange('CREATIVE_SIMULATOR');
     };
@@ -577,11 +576,15 @@ OUTPUT FORMAT (JSON ARRAY):
                                     <div className={`${offerType !== 'Paket / Bundle' ? 'opacity-30 pointer-events-none' : ''}`}>
                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Detail Bundle</label>
                                         <div className="flex gap-2 mt-1">
-                                            <input value={bundleDetail} onChange={e => setBundleDetail(e.target.value)} className="flex-1 p-3 rounded-lg border border-gray-300 text-sm outline-none font-bold" placeholder="E.g. Beli 2 Gratis 1" />
-                                            <button onClick={handleGenerateOffers} disabled={isSuggestingOffer || !product} className="bg-yellow-50 border border-yellow-200 text-yellow-600 px-3 rounded-lg font-bold text-xs hover:bg-yellow-100 transition-colors flex items-center gap-1" title="Saran AI">
+                                            <input value={bundleDetail} onChange={e => { setBundleDetail(e.target.value); setOfferConfirmed(false); }} className="flex-1 p-3 rounded-lg border border-gray-300 text-sm outline-none font-bold" placeholder="Isi paket dan syarat yang benar" />
+                                            <button onClick={handleGenerateOffers} disabled={isSuggestingOffer || !product} className="bg-yellow-50 border border-yellow-200 text-yellow-600 px-3 rounded-lg font-bold text-xs hover:bg-yellow-100 transition-colors flex items-center gap-1" title="Usulkan ide untuk diverifikasi">
                                                 {isSuggestingOffer ? <RefreshCw className="w-3 h-3 animate-spin"/> : <Gift className="w-3 h-3"/>}
                                             </button>
                                         </div>
+                                        <label className="mt-2 flex items-start gap-2 text-[11px] text-gray-600 leading-relaxed">
+                                            <input type="checkbox" checked={offerConfirmed} onChange={e => setOfferConfirmed(e.target.checked)} className="mt-0.5" />
+                                            Saya sudah memastikan harga, isi paket, manfaat, dan syarat penawaran ini benar serta tersedia.
+                                        </label>
                                     </div>
                                 </div>
                             </>
@@ -656,6 +659,7 @@ OUTPUT FORMAT (JSON ARRAY):
                 {/* EDITOR LEFT */}
                 <div className="space-y-4">
                     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div className="px-4 pt-3 text-xs text-blue-800 bg-blue-50">Mockup tampilan iklan. Ini bukan publikasi Meta dan tidak menampilkan performa aktual.</div>
                         <div className="p-4 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
                              <div className="flex items-center gap-2">
                                  <div className="w-2 h-6 bg-fb-blue rounded-full"></div>
@@ -697,7 +701,7 @@ OUTPUT FORMAT (JSON ARRAY):
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[11px] font-bold text-gray-600 uppercase">Deskripsi (Link Description)</label>
-                                <input value={simDescription} onChange={e => setSimDescription(e.target.value)} className="w-full p-3 border border-gray-300 rounded-md text-[13px] font-medium focus:ring-1 focus:ring-fb-blue outline-none" placeholder="Contoh: ⭐⭐⭐⭐⭐ 4.9/5" />
+                                <input value={simDescription} onChange={e => setSimDescription(e.target.value)} className="w-full p-3 border border-gray-300 rounded-md text-[13px] font-medium focus:ring-1 focus:ring-fb-blue outline-none" placeholder="Hanya klaim/fakta yang sudah diverifikasi" />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[11px] font-bold text-gray-600 uppercase">Tombol CTA</label>
@@ -760,9 +764,8 @@ OUTPUT FORMAT (JSON ARRAY):
                             </div>
                             <button className="bg-[#e4e6eb] hover:bg-gray-300 text-[#050505] px-3.5 py-1.5 rounded-md font-bold text-[13.5px] border border-gray-200 shadow-sm flex items-center gap-1.5 whitespace-nowrap"><MessageCircle className="w-4 h-4 fill-[#050505]" /> {simCta}</button>
                         </div>
-                        <div className="px-3 py-2.5 border-t border-gray-100 flex justify-between items-center text-[12.5px] text-[#65676b]">
-                            <div className="flex items-center gap-1.5"><div className="flex -space-x-1"><div className="w-4 h-4 bg-fb-blue rounded-full border border-white flex items-center justify-center shadow-sm z-20"><ThumbsUp className="w-2.5 h-2.5 text-white fill-white" /></div><div className="w-4 h-4 bg-red-500 rounded-full border border-white flex items-center justify-center shadow-sm z-10"><Heart className="w-2.5 h-2.5 text-white fill-white" /></div></div><span className="font-medium">{simLikes}</span></div>
-                            <div className="flex gap-2 font-medium"><span>{simComments} komentar</span><span>·</span><span>{simShares} share</span></div>
+                        <div className="px-3 py-2.5 border-t border-gray-100 text-[11px] text-gray-500 text-center">
+                            Interaksi dan performa iklan tidak disimulasikan.
                         </div>
                     </div>
                 </div>

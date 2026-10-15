@@ -7,7 +7,7 @@ import { Activity, AlertTriangle, CheckCircle2, Skull, TrendingUp, Upload, Eye, 
 // Tipe Data untuk Hasil Analisa AI
 interface AIAnalysisResult {
     // Shared
-    status: 'KILL' | 'WARNING' | 'SCALE' | 'FATIGUE' | 'HOLD';
+    status: 'KILL' | 'WARNING' | 'SCALE' | 'FATIGUE' | 'HOLD' | 'NEED_CONTEXT' | 'VISUAL_REVIEW';
     verdict_title: string;
     action: string;
     reason: string[];
@@ -23,7 +23,7 @@ interface AIAnalysisResult {
         hook: number;
         hold: number;
         cta: number;
-        viral: number;
+        concept_clarity: number;
         total: number;
     };
     script_breakdown?: {
@@ -161,71 +161,60 @@ const ToolAnalyzer = () => {
                 // --- DASHBOARD ANALYSIS PROMPT ---
                 promptText = `
                 ROLE:
-                Kamu adalah Senior Media Buyer Indonesia yang galak tapi logis. 
-                Tugasmu: BACA SCREENSHOT DASHBOARD dan beri keputusan tegas.
-                
-                GAYA BAHASA (WAJIB):
-                - Gunakan Bahasa Indonesia "Tongkrongan Advertiser".
-                - Jangan pakai bahasa robot/formal.
-                - Gunakan istilah: "Boncos", "Gaspol", "Matikan", "Pantau", "Tipis".
-                - Langsung ke inti, jangan bertele-tele.
+                Kamu adalah analis dashboard iklan. Screenshot hanya memberi gambaran terbatas dan angka OCR bisa keliru.
 
-                ATURAN MAIN (THRESHOLDS):
-                1. IKLAN BAGUS (SCALE): CPR <= Rp 6.000 DAN Results >= 30.
-                2. IKLAN HATI-HATI (HOLD): CPR Rp 6.001 - Rp 8.000.
-                3. IKLAN SAMPAH (KILL): CPR > Rp 8.000 ATAU Spend > Rp 30.000 tapi 0 Hasil.
+                ATURAN:
+                - Ekstrak Spend, Results, CPR, dan CPM hanya jika terbaca jelas. Jika ragu, tulis "Tidak terbaca jelas".
+                - Jangan memakai ambang CPR, spend, atau jumlah hasil yang universal. Nilai keputusan tergantung target CPP/CPA, margin, objective, atribusi, periode, dan volume data.
+                - Karena pengguna belum memberi target bisnis, status default harus NEED_CONTEXT. Jangan menyuruh scale, kill, atau menaikkan budget.
+                - Ringkas konteks apa yang masih diperlukan untuk membuat keputusan. Tampilkan inferensi sebagai dugaan, bukan fakta.
+                - Gunakan Bahasa Indonesia yang lugas dan tidak menghakimi.
 
                 OUTPUT JSON:
                 {
-                  "spend": "Rp xxx.xxx",
-                  "results": "Total Results",
-                  "cpr": "Rp x.xxx",
-                  "cpm": "Avg CPM",
-                  "status": "SCALE" | "KILL" | "WARNING" | "HOLD",
-                  "verdict_title": "JUDUL KEPUTUSAN (Contoh: IKLAN INI BONCOS PARAH / GASPOL NAIKIN BUDGET)",
-                  "reason": [
-                    "Analisa 1 (Bahasa Santai)",
-                    "Analisa 2 (Bahasa Santai)"
-                  ],
-                  "action": "INSTRUKSI JELAS (Contoh: Matikan sekarang, jangan ditunda. Uangmu kebakar.)"
+                  "spend": "Angka yang terbaca atau Tidak terbaca jelas",
+                  "results": "Angka yang terbaca atau Tidak terbaca jelas",
+                  "cpr": "Angka yang terbaca atau Tidak terbaca jelas",
+                  "cpm": "Angka yang terbaca atau Tidak terbaca jelas",
+                  "status": "NEED_CONTEXT" | "WARNING" | "HOLD",
+                  "verdict_title": "Data terbaca — perlu target bisnis untuk menilai",
+                  "reason": ["Angka yang terlihat dan keyakinan OCR", "Target/periode/atribusi yang belum diketahui"],
+                  "action": "Masukkan batas CPP/CPA dan pastikan periode serta objective sebelum menentukan langkah."
                 }
                 `;
             } else {
                 // --- VIDEO CREATIVE ANALYSIS PROMPT ---
                 promptText = `
                 ROLE:
-                Kamu adalah Creative Director Galak.
-                Tugasmu: Bedah video ini, cari kenapa videonya jelek atau bagus.
+                Kamu adalah analis kreatif. Input berisi cuplikan frame video; audio tidak tersedia.
 
-                GAYA BAHASA (WAJIB):
-                - Bahasa Indonesia Santai & Tegas.
-                - Jangan memuji kalau jelek.
-                - Fokus ke 3 detik awal (Hook).
+                ATURAN:
+                - Nilai struktur visual secara subjektif untuk membantu revisi, bukan memprediksi viralitas atau performa iklan.
+                - Jangan mengarang dialog, musik, reaksi penonton, hasil penjualan, atau hal yang tidak tampak. Isi kolom audio dengan "Tidak dianalisis".
+                - Gunakan Bahasa Indonesia yang jelas dan berimbang. Bedakan observasi dari saran.
+                - Status selalu VISUAL_REVIEW; video saja tidak membuktikan bahwa iklan akan menang, scale, atau gagal.
 
-                TUGAS 1: BEDAH SKRIP (REVERSE ENGINEER)
-                Tulis ulang apa yang terjadi di video scene demi scene.
-
-                TUGAS 2: SKORING (0-10)
-                - Hook: Seberapa kuat 3 detik awal?
-                - Retensi: Ngebosenin gak?
-                - CTA: Jelas gak perintahnya?
+                TUGAS:
+                1. Uraikan perubahan visual per adegan berdasarkan frame yang tersedia.
+                2. Beri skor subjektif 0–10 untuk hook visual, alur/retensi visual, kejelasan CTA yang tampak, dan kejelasan konsep. Jangan menjumlahkan skor menjadi prediksi performa.
+                3. Beri saran revisi yang dapat diuji.
 
                 OUTPUT JSON:
                 {
-                  "status": "SCALE" | "KILL" | "WARNING", 
-                  "verdict_title": "JUDUL AUDIT (Contoh: KONTEN MEMBOSANKAN / HOOKNYA JUARA)",
-                  "creative_score": { "hook": 8, "hold": 7, "cta": 9, "viral": 6, "total": 30 },
+                  "status": "VISUAL_REVIEW",
+                  "verdict_title": "Audit visual — bukan prediksi performa",
+                  "creative_score": { "hook": 6, "hold": 6, "cta": 6, "concept_clarity": 6, "total": 24 },
                   "script_breakdown": [
-                    { "time": "0-3s", "scene": "Hook Pembuka", "visual": "...", "audio": "..." }
+                    { "time": "0-3s", "scene": "Adegan pembuka", "visual": "Deskripsi yang tampak", "audio": "Tidak dianalisis" }
                   ],
-                  "reason": ["Komentar pedas 1", "Komentar pedas 2"],
-                  "action": "SARAN EDITING (Contoh: Potong intro-nya, kelamaan! Ganti musik yang lebih jedag-jedug.)"
+                  "reason": ["Observasi visual", "Saran uji"],
+                  "action": "Tinjau dan uji perubahan kreatif ini; jangan gunakan skor sebagai jaminan hasil."
                 }
                 `;
             }
 
             const response = await ai.models.generateContent({
-                model: 'gpt-4.1-mini',
+                model: 'gpt-6-luna',
                 contents: {
                     parts: [
                         { inlineData: { mimeType: currentMime, data: currentBase64 } },
@@ -243,7 +232,10 @@ const ToolAnalyzer = () => {
 
             if (rawText) {
                 try {
-                    const parsedResult = JSON.parse(rawText);
+                    const parsedResult = JSON.parse(rawText) as AIAnalysisResult;
+                    const validStatus = ['KILL', 'WARNING', 'SCALE', 'FATIGUE', 'HOLD', 'NEED_CONTEXT', 'VISUAL_REVIEW'].includes(parsedResult?.status);
+                    if (!validStatus || !Array.isArray(parsedResult.reason) || typeof parsedResult.action !== 'string' || typeof parsedResult.verdict_title !== 'string') throw new Error('Struktur hasil AI tidak lengkap. Coba analisis ulang.');
+                    if (mode === 'CREATIVE' && (!parsedResult.creative_score || !Array.isArray(parsedResult.script_breakdown) || !['hook', 'hold', 'cta', 'concept_clarity'].every(key => Number.isFinite((parsedResult.creative_score as any)[key])))) throw new Error('Hasil audit visual AI tidak lengkap. Coba analisis ulang.');
                     setAnalysisResult(parsedResult);
                 } catch (parseError) {
                     console.error("JSON Parse Error:", parseError, rawText);
@@ -274,6 +266,11 @@ const ToolAnalyzer = () => {
 
     const downloadExcel = () => {
         if (!analysisResult) return;
+        const safeCell = (value: unknown) => {
+            const raw = String(value ?? '');
+            const escaped = raw.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;');
+            return /^[=+\-@\t\r]/.test(raw) ? `'${escaped}` : escaped;
+        };
 
         let content = '';
         
@@ -285,26 +282,26 @@ const ToolAnalyzer = () => {
         // Data Rows
         content += `<tr><td colspan="2" style="background-color:#000; color:#fff; font-weight:bold; font-size:14px;">LAPORAN ANALISA IKLAN</td></tr>`;
         content += `<tr><td><b>Tanggal Audit</b></td><td>${new Date().toLocaleDateString('id-ID')}</td></tr>`;
-        content += `<tr><td><b>Keputusan</b></td><td style="font-weight:bold; color:${analysisResult.status === 'KILL' ? 'red' : 'green'}">${analysisResult.verdict_title}</td></tr>`;
-        content += `<tr><td><b>Rekomendasi</b></td><td>${analysisResult.action}</td></tr>`;
+        content += `<tr><td><b>Keputusan</b></td><td style="font-weight:bold; color:${analysisResult.status === 'KILL' ? 'red' : 'green'}">${safeCell(analysisResult.verdict_title)}</td></tr>`;
+        content += `<tr><td><b>Rekomendasi</b></td><td>${safeCell(analysisResult.action)}</td></tr>`;
         
         if (mode === 'DASHBOARD') {
              content += `<tr><td colspan="2" style="background-color:#eee;"><b>METRIK UTAMA</b></td></tr>`;
-             content += `<tr><td>Spend</td><td>${analysisResult.spend}</td></tr>`;
-             content += `<tr><td>Results</td><td>${analysisResult.results}</td></tr>`;
-             content += `<tr><td>CPR</td><td>${analysisResult.cpr}</td></tr>`;
-             content += `<tr><td>CPM</td><td>${analysisResult.cpm}</td></tr>`;
+             content += `<tr><td>Spend</td><td>${safeCell(analysisResult.spend )}</td></tr>`;
+             content += `<tr><td>Results</td><td>${safeCell(analysisResult.results )}</td></tr>`;
+             content += `<tr><td>CPR</td><td>${safeCell(analysisResult.cpr )}</td></tr>`;
+             content += `<tr><td>CPM</td><td>${safeCell(analysisResult.cpm )}</td></tr>`;
         } else {
              content += `<tr><td colspan="2" style="background-color:#eee;"><b>SKOR KREATIF</b></td></tr>`;
              content += `<tr><td>Hook (3s)</td><td>${analysisResult.creative_score?.hook}/10</td></tr>`;
              content += `<tr><td>Retensi</td><td>${analysisResult.creative_score?.hold}/10</td></tr>`;
              content += `<tr><td>CTA</td><td>${analysisResult.creative_score?.cta}/10</td></tr>`;
-             content += `<tr><td>Viral Factor</td><td>${analysisResult.creative_score?.viral}/10</td></tr>`;
+             content += `<tr><td>Concept Clarity</td><td>${analysisResult.creative_score?.concept_clarity}/10</td></tr>`;
         }
 
         content += `<tr><td colspan="2" style="background-color:#eee;"><b>CATATAN DETIL</b></td></tr>`;
         analysisResult.reason.forEach(r => {
-             content += `<tr><td colspan="2">${r}</td></tr>`;
+             content += `<tr><td colspan="2">${safeCell(r)}</td></tr>`;
         });
 
         content += `</table></body></html>`;
@@ -344,19 +341,20 @@ const ToolAnalyzer = () => {
 
     // Score Bar Helper
     const ScoreBar = ({ label, score }: { label: string, score: number }) => {
+        const safeScore = Number.isFinite(score) ? Math.min(10, Math.max(0, score)) : 0;
         let color = 'bg-gray-500';
-        if(score >= 8) color = 'bg-green-500';
-        else if(score >= 5) color = 'bg-yellow-500';
+        if(safeScore >= 8) color = 'bg-green-500';
+        else if(safeScore >= 5) color = 'bg-yellow-500';
         else color = 'bg-red-500';
 
         return (
             <div className="mb-2">
                 <div className="flex justify-between text-xs font-bold mb-1 uppercase text-gray-600">
                     <span>{label}</span>
-                    <span>{score}/10</span>
+                    <span>{safeScore}/10</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className={`h-2 rounded-full ${color}`} style={{ width: `${score * 10}%` }}></div>
+                    <div className={`h-2 rounded-full ${color}`} style={{ width: `${safeScore * 10}%` }}></div>
                 </div>
             </div>
         )
@@ -507,7 +505,7 @@ const ToolAnalyzer = () => {
                                     </div>
                                     <div>
                                         <div className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">
-                                            {mode === 'CREATIVE' ? 'CREATIVE VERDICT' : 'KEPUTUSAN DASHBOARD'}
+                                            {mode === 'CREATIVE' ? 'AUDIT VISUAL (BUKAN PERFORMA)' : 'PEMBACAAN DASHBOARD (OCR)'}
                                         </div>
                                         <h2 className={`text-3xl font-black uppercase tracking-tight leading-none ${
                                             analysisResult.status === 'SCALE' ? 'text-green-700' :
@@ -525,7 +523,7 @@ const ToolAnalyzer = () => {
                                     className="flex items-center gap-2 px-5 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-lg transition-colors"
                                 >
                                     <Download className="w-5 h-5" />
-                                    Download XLSX
+                                    Download laporan (.xls)
                                 </button>
                             </div>
                         </div>
@@ -563,9 +561,9 @@ const ToolAnalyzer = () => {
                                         {analysisResult.creative_score && (
                                             <div className="space-y-4">
                                                 <ScoreBar label="Hook (3 Detik Awal)" score={analysisResult.creative_score.hook} />
-                                                <ScoreBar label="Retensi (Anti Bosan)" score={analysisResult.creative_score.hold} />
+                                                <ScoreBar label="Alur visual (subjektif)" score={analysisResult.creative_score.hold} />
                                                 <ScoreBar label="Kejelasan CTA" score={analysisResult.creative_score.cta} />
-                                                <ScoreBar label="Potensi Viral" score={analysisResult.creative_score.viral} />
+                                                <ScoreBar label="Kejelasan konsep (subjektif)" score={analysisResult.creative_score.concept_clarity} />
                                             </div>
                                         )}
                                     </div>
@@ -575,7 +573,7 @@ const ToolAnalyzer = () => {
                                 <div className="bg-gray-900 text-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-400">
                                     <div className="text-xs font-bold text-gray-400 uppercase mb-2 flex items-center gap-2">
                                         <Zap className="w-4 h-4 text-yellow-400" />
-                                        REKOMENDASI (WAJIB DILAKUKAN)
+                                        SARAN LANJUT (TINJAU DULU)
                                     </div>
                                     <div className="font-bold text-xl leading-relaxed">
                                         "{analysisResult.action}"
@@ -588,7 +586,7 @@ const ToolAnalyzer = () => {
                                 <div>
                                     <h4 className="font-bold text-gray-800 text-lg mb-4 flex items-center gap-2">
                                         <ScanEye className="w-5 h-5 text-gray-600"/> 
-                                        {mode === 'DASHBOARD' ? 'Diagnosa Dokter' : 'Bedah Video'}
+                                        {mode === 'DASHBOARD' ? 'Catatan analisis' : 'Bedah Video'}
                                     </h4>
                                     
                                     <div className="space-y-4">
@@ -617,7 +615,7 @@ const ToolAnalyzer = () => {
                                                     <tr>
                                                         <th className="p-4 w-[100px]">Durasi</th>
                                                         <th className="p-4">Visual (Apa yang terjadi?)</th>
-                                                        <th className="p-4 bg-gray-50">Audio (Apa yang diomongin?)</th>
+                                                        <th className="p-4 bg-gray-50">Audio (tidak dianalisis)</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-gray-100">

@@ -13,7 +13,7 @@ export const GUIDES: GuideSection[] = [
     title: '', // Judul dikosongkan agar tidak duplikat dengan Header Content
     content: `
 # 📝 CEKLIS HARIAN ADVERTISER
-**Dipakai Setiap Hari — Tanpa Pengecualian**
+**Contoh ritme kerja — sesuaikan dengan jadwal tim dan kebutuhan akun.**
 
 **Tujuan:** Bukan bikin iklan menang, tapi **mencegah uang bocor** karena kelalaian.
 
@@ -24,7 +24,7 @@ export const GUIDES: GuideSection[] = [
 
 *   💸 **Cek Saldo Iklan:** Pastikan cukup untuk 24 jam ke depan. (Jangan sampai iklan stop siang hari).
 *   🔭 **Dashboard Monitoring:** Buka dashboard, jangan edit apa pun.
-*   💀 **Cek Kebocoran:** Iklan habis > Rp 30.000 tapi **NOL hasil**? → **MATIKAN (KILL)**.
+*   💸 **Cek pengeluaran tanpa hasil:** Bandingkan dengan batas risiko/biaya target yang Anda tetapkan. Periksa juga jeda atribusi, chat di CS, dan kendala teknis sebelum memutuskan pause.
 *   🚫 **Cek Status:** Pastikan tidak ada iklan Disapproved / Error.
 *   🔗 **Cek Teknis:** Test link WA dan auto-reply di HP sendiri.
 
@@ -35,21 +35,21 @@ export const GUIDES: GuideSection[] = [
 ### 🕙 10.00 | CEK KESEHATAN KREATIF (RADAR AWAL)
 **Fokus:** Bunuh visual gagal sejak lahir.
 
-*   👁️ **Hook Rate < 25%** → **MATIKAN (KILL)**. (Orang tidak berhenti scrolling).
-*   📉 **CPMr > Rp 20.000** (iklan baru) → **MATIKAN (KILL)**. (Algoritma menolak kontenmu).
-*   📢 **Action:** Lapor tim kreatif: *"Iklan X gagal di 3 detik awal. Ganti DEPAN saja."*
+*   👁️ **Hook rate lebih rendah dari materi pembanding?** Periksa jumlah tayangan dan definisi metrik; gunakan hasilnya sebagai petunjuk revisi hook, bukan vonis tunggal.
+*   📉 **CPM tinggi?** Bandingkan dengan kampanye serupa, audiens, placement, dan periode yang sama. CPM saja tidak membuktikan algoritma menolak materi.
+*   📢 **Action:** Minta tim kreatif meninjau pembuka dan uji variasi hook jika perbandingan datanya cukup.
 
-> ⛔ **DILARANG:** Berharap "kasih waktu sedikit lagi" untuk iklan visual jelek.
+> ⛔ **Hindari:** Mengubah atau menghentikan iklan hanya dari satu sinyal visual tanpa memeriksa data dan konteksnya.
 
 ---
 
 ### 🕒 15.00 | CEK BIAYA & KEPUTUSAN AWAL
 **Fokus:** Efisiensi biaya (CPR & CPP Sementara).
 
-*   ⚠️ **CPR > Rp 8.000** → **PAUSE**.
+*   ⚠️ **CPR di atas target akun?** Periksa volume dan kualitas chat serta closing sebelum memilih lanjut, ubah, atau pause.
 *   💬 **Cek Komentar:** Hapus/Hide komentar spam atau negatif di iklan winning.
-*   📊 **Cross-Check CS:** Dashboard mahal tapi WA rame & ada closing? → **LANJUT (AMAN)**.
-*   💀 **CPP Tembus Batas** (Rp 50rb+) tanpa sale? → **MATIKAN FINAL**.
+*   📊 **Cross-Check CS:** Cocokkan percakapan dan closing dengan spend, margin, periode, dan jendela atribusi sebelum menentukan langkah.
+*   💀 **CPP melewati batas impas/risiko yang Anda hitung?** Evaluasi data periode yang sama, kualitas closing, dan kendala operasional sebelum menghentikan materi.
 
 > ⛔ **DILARANG:** Nunggu sore tanpa status jelas atau halu "bentar lagi closing".
 
@@ -58,9 +58,9 @@ export const GUIDES: GuideSection[] = [
 ### 🕕 18.00 | CEK CPP REAL (JAM KRUSIAL)
 **Fokus:** Hakim Tertinggi (Data Real CS).
 
-*   🧮 **Hitung CPP REAL:** (Total Spend ÷ Total Closing Real CS).
-*   ✅ **CPP Aman** → **LANJUT (PROFIT)** untuk besok.
-*   🛑 **CPP Mahal** → **OFF SEMENTARA**.
+*   🧮 **Hitung CPP real:** Total spend ÷ closing terverifikasi pada periode dan jendela atribusi yang sepadan. Jika belum ada closing, jangan membagi dengan nol; evaluasi batas risiko dan data awal.
+*   ✅ **CPP sesuai target bisnis** → lanjutkan pemantauan; status ini sendiri belum membuktikan laba bersih.
+*   🛑 **CPP melewati batas risiko yang sudah ditetapkan** → evaluasi lalu pause atau ubah sesuai kondisi akun.
 *   📣 **Action:** Pastikan CS follow-up semua chat masuk sekarang (wajib).
 
 > ⛔ **DILARANG:** Menyelamatkan iklan mahal dengan doa atau harapan palsu.
@@ -70,8 +70,8 @@ export const GUIDES: GuideSection[] = [
 ### 🕘 21.00 – 23.00 | FINALISASI HARIAN
 **Fokus:** Evaluasi & Persiapan Besok.
 
-*   🏁 **Status Akhir:** Tentukan nasib iklan pause (LANJUT / OFF FINAL).
-*   🏆 **Identifikasi Winner:** Catat Post ID iklan bagus untuk kandidat scale besok.
+*   🏁 **Status Akhir:** Catat keputusan dan alasan: lanjut, pause, atau uji perubahan.
+*   🏆 **Catat kandidat terbaik sementara:** Simpan Post ID dan konteks uji; evaluasi lagi sebelum menaikkan anggaran.
 *   ⚠️ **Evaluasi Bahaya:** Iklan mana yang paling merugikan hari ini?
 *   📝 **Request Konten:** Siapkan amunisi baru untuk besok pagi.
 
@@ -86,21 +86,20 @@ export const GUIDES: GuideSection[] = [
 3.  Keputusan hari ini jaga **uang** atau **ego**?
 4.  Besok fokus **jaga** atau **scale**?
 
-*Jika ragu → besok jaga dulu.*
+*Jika belum yakin, periksa kualitas data, catat asumsi, dan tentukan kapan evaluasi berikutnya.*
 
 ---
 
-### 🔒 ATURAN MUTLAK
-*   Lewat 1 jam cek = **Pelanggaran Disiplin**.
-*   Tidak ikut jam = **Sumber Boncos**.
-*   Tidak ada "feeling" di luar ceklis.
+### 🔒 KEBIASAAN YANG DISARANKAN
+*   Tentukan jadwal pemantauan yang sesuai dengan jam kerja, volume, dan SLA CS.
+*   Sesuaikan pengingat dengan kemampuan tim; tidak ada interval yang wajib untuk semua akun.
+*   Catat alasan keputusan dan gunakan batas risiko yang ditetapkan sebelum hasil terlihat.
 
 ### 🧾 RINGKASAN TEMPEL
-*   **10:00** → Bunuh visual jelek
-*   **15:00** → Jaga biaya
-*   **18:00** → Hakimi CPP
-*   **23:00** → Kunci pemenang
-*   **Ragu** = Matikan
+*   **Awal hari** → Cek status, tracking, dan operasional
+*   **Saat evaluasi** → Bandingkan metrik dengan batas risiko dan target
+*   **Akhir periode** → Catat hasil dan keputusan berikutnya
+*   **Data belum cukup** → Tetapkan batas uji dan jadwal evaluasi
 `
   },
 
@@ -121,9 +120,7 @@ Bukan menjaga iklan.
 Bukan menjaga ego.
 Bukan membuktikan ide.
 
-Iklan hanyalah alat.
-Rusak → **MATIKAN**.
-Ada peluang → buat baru.
+Iklan adalah alat uji. Jika ada masalah teknis atau risiko melewati batas yang ditetapkan, perbaiki atau pause. Jika performa belum jelas, kumpulkan data sesuai batas uji.
 
 > "Iklan mati itu biasa. Uang bocor itu dosa."
 
@@ -131,20 +128,20 @@ Ada peluang → buat baru.
 
 # 10 Hukum Keras (Hafalkan)
 
-1. **Ragu = Bayar Mahal**
-Diam karena **ragu** = uang terbakar sia-sia.
+1. **Ragu = Cek Bukti**
+Jika data belum cukup, cek kualitas pengukuran dan tunggu sesuai batas waktu uji yang sudah ditentukan.
 
-2. **Iklan Mikir Lama = Salah**
-Kalau harus cari alasan buat bertahan → **MATIKAN**.
+2. **Hindari keputusan karena sunk cost**
+Tinjau kriteria yang ditetapkan sebelum tayang. Pause jika melewati batas risiko; jangan memutuskan hanya karena ingin membenarkan biaya yang sudah keluar.
 
-3. **Telat Matiin = Dosa Besar**
-Lebih baik **SALAH MATIIN** (padahal potensi bagus), daripada **TELAT MATIIN** (uang hangus).
+3. **Tetapkan batas risiko sebelum tayang**
+Jangan memperpanjang uji tanpa batas; jangan pula menghentikan materi hanya dari satu angka atau satu periode pendek.
 
-4. **Angka Jelek = Perintah Berhenti**
-**Merah** tidak untuk didiskusikan. Hentikan dulu, analisa belakangan.
+4. **Angka yang berubah = sinyal untuk diperiksa**
+Lihat metrik yang sesuai dengan tujuan, kecukupan data, atribusi, dan ekonomi produk sebelum bertindak.
 
-5. **Profit Hari Ini, Bukan Harapan Besok**
-Iklan hidup harus kasih uang hari ini.
+5. **Nilai hasil pada jendela yang tepat**
+Waktu konversi dan pelaporan dapat berbeda; cocokkan periode iklan dengan laporan penjualan/CS.
 
 6. **CS Bukan Penyelamat Sampah**
 CS closing, bukan tukang cuci lead jelek.
@@ -185,7 +182,7 @@ Jika muncul pikiran ini → **BERHENTI**.
 ---
 
 # 🧘 Ritual Wajib (Sebelum Klik)
-Setiap 3 jam:
+Gunakan jeda pemantauan yang sesuai dengan risiko, volume data, jam kerja, dan jeda konversi:
 1. Lepas mouse.
 2. Diam 10 detik.
 3. Ucapkan dalam hati: **"Tugas saya bukan membuat iklan hidup, tapi memastikan uang tidak bocor."**
@@ -198,20 +195,19 @@ Setiap 3 jam:
 
 **10 PERTANYAAN KUNCI**
 
-1️⃣ Kalau iklan ini jalan 1 jam lagi, uang **AMAN** atau bocor?
+1️⃣ Jika iklan tetap berjalan sampai evaluasi berikutnya, apakah pengeluarannya masih dalam batas risiko?
 2️⃣ Kalau ini uang pribadi, masih berani **LANJUT**?
 3️⃣ Angkanya masuk akal atau cuma harapan?
 4️⃣ Kalau iklan ini baru dibuat sekarang, masih mau dihidupkan?
-5️⃣ **Ragu** atau yakin? (**Ragu** = **MATIKAN**)
-6️⃣ Mana lebih mahal: salah **MATIKAN** atau telat **MATIKAN**?
+5️⃣ **Data cukup** untuk memutuskan atau perlu observasi sesuai batas uji?
+6️⃣ Apa batas biaya, durasi, dan jumlah data untuk keputusan ini?
 7️⃣ Iklan ini bantu nutup setoran hari ini atau nambah beban?
 8️⃣ Kalau besok angkanya sama persis, masih **UNTUNG**?
 9️⃣ Keputusan ini **jaga uang** atau jaga gengsi?
-🔟 Kalau ini iklan orang lain, sudah kamu **MATIKAN** belum?
+🔟 Bukti apa yang akan membuatmu lanjut, mengubah, atau menghentikannya?
 
-# 🔒 ATURAN MUTLAK
-Jika dari 10 pertanyaan ini ada SATU SAJA jawaban "**ragu**", "tidak yakin", atau "nggak enak" →
-**IKLAN MATI**. TANPA DISKUSI.
+# 🔒 ALUR KEPUTUSAN
+Jika data belum cukup, periksa tracking dan kualitas data. Catat batas pengeluaran, durasi uji, serta kriteria lanjut/pause sebelum evaluasi berikutnya.
 `
   },
   {
@@ -224,52 +220,50 @@ Jika dari 10 pertanyaan ini ada SATU SAJA jawaban "**ragu**", "tidak yakin", ata
 
 Jangan loncat langkah. Ikuti alur ini setiap cek dashboard.
 
-**1️⃣ Apakah Uang Keluar > Rp 30.000?**
-*   ❌ Belum: **LANJUT (AMAN)** (Masih fase belajar).
-*   ✅ Sudah: Lanjut ke poin 2.
+**1️⃣ Apakah data sudah cukup untuk evaluasi?**
+Periksa jumlah hasil, durasi, objective, jeda atribusi, dan batas risiko akun. Jumlah spend yang sama dapat berarti risiko berbeda untuk tiap bisnis.
 
 **2️⃣ Apakah Ada Hasil (Pesan/Chat Masuk)?**
-*   ❌ Tidak Ada: **MATIKAN SEKARANG (KILL)**.
+*   ❌ Belum ada hasil: bandingkan pengeluaran dengan batas risiko dan waktu konversi yang wajar; pause jika batas yang sudah ditetapkan tercapai.
 *   ✅ Ada: Lanjut ke poin 3.
 
-**3️⃣ Apakah Biaya Chat < Rp 6.000?**
+**3️⃣ Apakah biaya per chat sesuai target bisnis?**
 *   ❌ Tidak: Masuk **PANTAUAN KETAT** (Cek tiap jam).
-*   ⚠️ **Pengecualian:** Jika biaya **sangat mahal** (> Rp 10.000) → **MATIKAN SEKARANG**. Jangan tunggu sore.
+*   ⚠️ **Pengecualian:** jika biaya melampaui batas risiko bisnis, lakukan evaluasi dan pause sesuai prosedur akun.
 *   ✅ Ya: Lanjut ke poin 4.
 
-**4️⃣ (Khusus Jam ≥ 15.00) Apakah Biaya Closing ≤ Rp 30.000?**
-*   ❌ Tidak (Mahal): **MATIKAN SEMENTARA (PAUSE)**. Minta CS Follow up.
-*   ✅ Ya (Murah): **LANJUT (PROFIT)**.
+**4️⃣ Apakah CPP aktual masih di bawah batas impas dan sesuai target profit?**
+Bandingkan penjualan/closing dari periode yang sama dengan spend dan jendela atribusi. Pertimbangkan keterlambatan pencatatan sebelum mengubah status.
 
 ---
 
 # Rambu-Rambu Iklan
 
 **🟢 HIJAU (Aman & Untung)**
-*   **Data:** **CPR** Murah DAN **CPP** Aman.
-*   **Sikap:** **DIAMKAN.** Jangan disentuh, jangan diedit, jangan diganggu.
+*   **Data:** biaya per hasil dan CPP berada dalam target bisnis dengan volume data yang memadai.
+*   **Sikap:** hindari perubahan tanpa alasan; tetap pantau delivery, margin, dan kapasitas operasional.
 *   **Mental:** "Iklan hijau itu aset, jangan dirusak dengan tangan gatal."
 
 **🟡 KUNING (Waspada)**
 *   **Data:** Biaya agak mahal atau hasil naik turun.
 *   **Sikap:** Pantau tiap jam. **DILARANG TAMBAH MODAL.**
-*   **Batas Waktu:** Maksimal **24 Jam**. Jika tidak berubah jadi Hijau → **MATIKAN.** Jangan pelihara penyakit.
+*   **Batas Waktu:** tetapkan durasi uji sebelumnya sesuai volume dan jeda konversi. Jika target tidak tercapai, evaluasi faktor yang mungkin memengaruhi hasil sebelum memutuskan.
 *   **Mental:** "Kuning itu bukan aman, tapi sedang diuji."
 
 **🔴 MERAH (Bahaya)**
-*   **Data:** Nol Hasil atau **CPP** Mahal (> 30.000).
-*   **Sikap:** **MATIKAN SEMENTARA** atau **MATIKAN FINAL.**
-*   **Syarat Mati Final:** Jika sudah 1x dimatikan sementara lalu dinyalakan, tapi biaya tetap > 30.000. Jangan gali lubang tutup lubang.
+*   **Data:** hasil belum tercatat setelah batas waktu uji, atau CPP melampaui batas risiko yang ditetapkan.
+*   **Sikap:** tinjau kampanye dan pause materi yang melampaui batas risiko yang sudah ditentukan.
+*   **Syarat berhenti:** kriteria risiko yang disepakati sebelum uji tercapai, setelah memeriksa atribusi, kualitas lead, dan kendala operasional.
 *   **Mental:** "Merah itu perintah berhenti, bukan bahan analisa."
 
 ---
 
 # 🔒 PRINSIP KUNCI
-Dashboard tidak untuk diyakini, tapi untuk **DIPATUHI**.
+**Dashboard adalah sumber data yang perlu dibaca bersama konteks bisnis dan kualitas tracking.**
 
 1. **HIJAU** → Jangan ganggu (haram edit).
-2. **KUNING** → Awasi, jangan berharap.
-3. **MERAH** → Berhenti, bukan mikir.
+2. **KUNING** → Catat ketidakpastian dan evaluasi kembali pada jadwal yang ditetapkan.
+3. **MERAH** → Hentikan atau pause bila batas risiko tercapai; dokumentasikan alasannya.
 `
   },
   {
@@ -291,13 +285,13 @@ Lihat kombinasi angka ini untuk tahu cerita sebenarnya. Jangan baca angka satuan
 ### 🧨 KASUS 1: Uang Bocor (Masalah Teknis & Kualitas)
 
 **1. Pola "Hantu WhatsApp" (Ghosting)**
-*   📊 **Data:** **Link Clicks** Tinggi, tapi **Chat** Sedikit. (Selisih > 30%).
+*   📊 **Data:** klik tautan relatif tinggi tetapi chat tercatat sedikit; ukur selisih pada periode yang sama tanpa memakai ambang universal.
 *   💡 **Masalah:** Orang klik tombol, tapi malas kirim pesan. Loading lama atau sapaan ribet.
 *   💊 **Solusi:** Pakai **Pesan Otomatis** (Pre-filled). Pastikan sapaan di WA = janji di iklan.
 
-**2. Pola "Chat Rame, Zonk Closing" (Sampah)**
-*   📊 **Data:** **CPR** Murah + **Chat** Banyak + **Closing** Sedikit (< 15%).
-*   💡 **Masalah:** Penonton sampah, atau **Clickbait**.
+**2. Banyak chat, closing rendah**
+*   📊 **Data:** Rasio closing lebih rendah dari sasaran bisnis pada periode dan volume data yang sepadan.
+*   💡 **Periksa:** Kecocokan prospek, kejelasan penawaran, harga, tindak lanjut, dan kendala operasional sebelum menyimpulkan penyebab.
 *   💊 **Solusi:**
     *   Cek Umur/Lokasi (jangan-jangan Bocil).
     *   Cek Iklan: Apakah janji "Gratis" tapi aslinya mahal?
@@ -307,13 +301,13 @@ Lihat kombinasi angka ini untuk tahu cerita sebenarnya. Jangan baca angka satuan
 
 ### 🗑️ KASUS 2: Iklan Gagal (Masalah Konten)
 
-**3. Pola "Jempol Gak Berhenti" (Di-Skip)**
-*   📊 **Data:** Uang jalan + **CTR (All)** Rendah (< 1%).
-*   💡 **Masalah:** Iklanmu membosankan. Dianggap gangguan.
-*   💊 **Solusi:** Ganti **3 detik pertama**. Gambar/Video harus lebih mencolok / aneh.
+**3. Sinyal pembuka perlu ditinjau**
+*   📊 **Data:** Metrik klik atau tontonan awal lebih lemah daripada materi pembanding yang sepadan.
+*   💡 **Catatan:** Metrik agregat tidak membuktikan satu penyebab seperti hook yang buruk.
+*   💊 **Uji:** Periksa definisi metrik dan buat variasi pembuka dengan hipotesis yang jelas.
 
 **4. Pola "Video Nanggung" (Bosan di Tengah)**
-*   📊 **Data:** Banyak Play (>30%) + **Gak Nonton Habis**.
+*   📊 **Data:** banyak pemutaran awal tetapi retensi berikutnya turun dibanding materi sejenis.
 *   💡 **Masalah:** Awalnya seru, isinya bertele-tele.
 *   💊 **Solusi:** Edit video. Potong basa-basi. Langsung ke inti.
 
@@ -321,36 +315,36 @@ Lihat kombinasi angka ini untuk tahu cerita sebenarnya. Jangan baca angka satuan
 
 ### 📉 KASUS 3: Performa Turun (Fatigue)
 
-**5. Pola "Iklan Basi" (Jenuh)**
-*   📊 **Data:** **Frequency** Naik (> 1.5) + **CPM** Melonjak.
-*   💡 **Masalah:** Orang yang sama melihat iklanmu berkali-kali dan muak.
-*   💊 **Solusi:** Buat iklan baru dengan konsep **Beda Total**.
+**5. Sinyal potensi kejenuhan**
+*   📊 **Data:** Frekuensi meningkat bersamaan dengan hasil yang melemah dibanding periode atau materi sepadan.
+*   💡 **Catatan:** Frekuensi atau CPM saja tidak membuktikan audiens bosan.
+*   💊 **Uji:** Periksa jangkauan, kualitas hasil, durasi, audiens, dan perubahan lain; uji konsep baru jika datanya mendukung.
 
-**6. Pola "Denda Kembar" (Similarity)**
-*   📊 **Data:** Iklan "Baru" tapi **CPM** langsung Mahal.
-*   💡 **Masalah:** Kamu cuma ganti warna/teks dikit. Sistem tahu ini duplikat.
-*   💊 **Solusi:** **Variasi Radikal**. Ganti format (Video ke Foto), ganti angle.
+**6. Kemiripan kreatif (hipotesis untuk diuji)**
+*   📊 **Data:** CPM iklan baru lebih tinggi dari pembanding.
+*   💡 **Catatan:** CPM saja tidak membuktikan penalti kemiripan atau penyebab tertentu.
+*   💊 **Uji:** Bandingkan konsep, format, audiens, placement, jadwal, dan penawaran secara terkontrol.
 
 ---
 
 ### ⚙️ KASUS 4: Masalah Teknis
 
 **7. Pola "Iklan Kurang Gizi" (Learning)**
-*   📊 **Data:** **CPR** Naik Turun drastis + Chat < 50 seminggu.
-*   💡 **Masalah:** Modal diecer-ecer. Sistem bingung datanya kurang.
-*   💊 **Solusi:** **Gabungkan Modal**. Matikan adset kecil, fokus ke 1 kampanye besar.
+*   📊 **Data:** CPR berubah-ubah atau jumlah hasil terlalu sedikit untuk dibandingkan.
+*   💡 **Catatan:** Tentukan kecukupan data dari objective, volume, anggaran, dan jeda konversi; tidak ada ambang hasil mingguan yang cocok untuk semua akun.
+*   💊 **Uji:** Tinjau apakah struktur saat ini membagi anggaran terlalu tipis; sederhanakan hanya jika sesuai tujuan dan data.
 
 **8. Pola "Salah Kolam" (Targeting)**
-*   📊 **Data:** **CPM** Mahal banget padahal iklan baru.
-*   💡 **Masalah:** Target terlalu sempit (Interest aneh-aneh).
-*   💊 **Solusi:** **Broad Targeting**. Lepas interest. Biarkan konten yang mencari orang.
+*   📊 **Data:** CPM lebih tinggi daripada pembanding yang sepadan.
+*   💡 **Catatan:** Periksa audiens, placement, objective, kompetisi, jadwal, dan kualitas pengukuran; CPM saja tidak menunjukkan penyebabnya.
+*   💊 **Uji:** Bandingkan opsi audiens yang relevan dengan strategi akun, termasuk audiens lebih luas bila layak.
 
 ---
 
 # 🧠 Resep Dokter
 1.  **Satu Masalah = Satu Solusi.** Jangan ganti konten + targeting + modal sekaligus.
 2.  **Jangan Bedah Mayat.** Iklan yang sudah mati (**MERAH**) biarkan mati.
-3.  **Hari ini MATIKAN, Besok PERBAIKI.**
+3.  **Catat temuan hari ini, uji revisi pada periode berikutnya.**
 `
   },
   {
@@ -362,11 +356,10 @@ Lihat kombinasi angka ini untuk tahu cerita sebenarnya. Jangan baca angka satuan
 # 1. Syarat Mutlak Scaling
 Jangan pernah scale kalau salah satu ini **TIDAK** terpenuhi:
 
-✅ **CPR** Murah (< Rp 6.000).
-✅ **CPP** Aman (≤ Rp 30.000).
-✅ Stabil Minimal **2 Hari**. (Jangan scale kalau baru bagus 1 jam).
-✅ **PROFIT** Jalan (Bukan cuma Balik Modal).
-✅ **CS Sanggup Balas**. (Jika CS kewalahan, scale = bunuh diri).
+✅ Biaya per hasil dan CPP memenuhi target yang dihitung dari margin serta tujuan.
+✅ Ada volume dan periode pembanding yang memadai untuk menilai kestabilan.
+✅ Hasil penjualan dan biaya diukur pada jendela atribusi yang sepadan.
+✅ Tim CS, stok, fulfillment, dan arus kas siap menghadapi kenaikan volume.
 
 ---
 
@@ -374,9 +367,8 @@ Jangan pernah scale kalau salah satu ini **TIDAK** terpenuhi:
 
 **A. Scale Vertikal (Naik Budget)**
 *   **Caranya:** Edit budget di Ad Set / Campaign.
-*   **Aturan:** Maksimal naik **20%**.
-*   **Kapan:** 1x per 3-7 hari. Jangan tiap hari.
-*   **Risiko:** Jika naik >20%, algoritma kaget (Reset Learning) → **CPR** bisa meledak.
+*   **Aturan:** tentukan kenaikan bertahap sesuai volatilitas, kapasitas, dan batas risiko akun. Tidak ada persentase atau jeda yang cocok untuk semua kampanye.
+*   Perubahan budget dapat memengaruhi delivery; pantau hasil dan status learning tanpa menganggap perubahan tertentu selalu meresetnya.
 
 **B. Scale Horizontal (Duplikasi / Ternak)**
 *   **Caranya:** Ambil **Post ID** iklan winning → Masukkan ke Kampanye Baru (CBO Broad / ASC).
@@ -388,28 +380,29 @@ Jangan pernah scale kalau salah satu ini **TIDAK** terpenuhi:
 # 3. SOP Monitoring Pasca-Scale (Wajib)
 Banyak advertiser hancur karena lupa mengecek setelah menaikkan budget.
 
-**Cek Tiap 3 Jam Setelah Scale:**
-*   ❓ Apakah **CPR** masih aman?
-*   ❓ Apakah **CPP** masih profit?
-*   ❓ Apakah **CPM** melonjak?
+**Jadwal pemantauan setelah perubahan anggaran:**
+*   ❓ Apakah biaya per hasil dan CPP masih sesuai target?
+*   ❓ Apakah hasil penjualan/CS tercatat pada periode yang sama?
+*   ❓ Apakah operasional siap menerima volume tambahan?
+*   Atur interval berdasarkan volume, jeda atribusi, tingkat risiko, dan kemampuan tim; tiga jam bukan aturan untuk semua akun.
 
 **Tindakan Darurat:**
-*   🔴 Jika biaya naik tajam: **PAUSE (OFF SEMENTARA)**.
-*   🟡 Jika tidak membaik dalam 6 jam: **KEMBALIKAN KE BUDGET LAMA**.
-*   ❌ Jika masih jelek: **MATIKAN**.
+*   🔴 Jika batas risiko yang disepakati sebelum uji tercapai: evaluasi dan pause sesuai prosedur akun.
+*   🟡 Jika hasil belum membaik: periksa periode, volume data, tracking, dan faktor lain sebelum mengubah anggaran.
+*   ❌ Jika metrik tetap di luar target setelah data cukup: evaluasi konteks lalu dokumentasikan keputusan.
 
 ---
 
 # 4. Efek Samping Scale (Wajib Tahu)
 Ini yang sering membunuh advertiser yang serakah.
 
-**1. Hukum Keausan Konten**
-*   Semakin besar budget = Semakin cepat orang bosan.
-*   **Solusi:** Sebelum scale, siapkan 3-5 Video Baru. Jangan scale kalau tidak punya peluru cadangan.
+**1. Kesiapan materi**
+*   Anggaran lebih besar dapat mengubah jangkauan dan pola paparan, tetapi tidak otomatis membuat audiens lebih cepat bosan.
+*   **Persiapan:** Sediakan variasi materi sesuai volume, kapasitas produksi, dan rencana pemantauan; jumlahnya bergantung pada bisnis.
 
 **2. Cek Stok & Operasional**
-*   Jangan scale kalau stok barang sisa dikit.
-*   Iklan kencang tapi barang kosong = **Uang Terbakar**.
+*   Pastikan stok, pemenuhan, dan layanan mampu menangani volume tambahan.
+*   Jika kapasitas operasional tidak siap, pengeluaran tambahan berisiko tidak menghasilkan pengalaman pelanggan yang baik.
 `
   },
   {
@@ -436,8 +429,7 @@ Setiap klik mouse harus ada alasannya.
 2.  Filter: Iklan Aktif hari ini.
 3.  Urutkan berdasarkan **Amount Spent**.
 4.  Cek iklan baru:
-    *   Hook Rate < 25%? → **MATIKAN**.
-    *   CPMr > Rp 20rb? → **MATIKAN**.
+    *   Bandingkan metrik kreatif dengan baseline sepadan. Jika lemah, uji revisi hook atau konsep dan evaluasi setelah volume data cukup.
 5.  Jangan ragu. Iklan jelek pagi ini tidak akan jadi bagus sore nanti.
 
 ### ⏰ 15:00 WIB — SESI "PENJAGA"
@@ -455,11 +447,11 @@ Setiap klik mouse harus ada alasannya.
 **Tugas:** Evaluasi & Setup Besok.
 
 1.  Finalisasi:
-    *   Iklan **MERAH** hari ini → **MATIKAN FINAL**.
+    *   Iklan yang melewati batas risiko → tinjau dan dokumentasikan keputusan untuk materi terkait.
     *   Iklan **HIJAU** → Biarkan lanjut besok.
 2.  Persiapan Scale:
     *   Pilih kandidat scale.
-    *   Jadwalkan kenaikan budget / duplikasi untuk jam 00:00.
+    *   Jadwalkan perubahan pada waktu yang sesuai dengan tim pemantau dan ritme operasional.
 3.  Lapor ke Bos/Tim:
     *   "Hari ini Profit/Rugi sekian."
     *   "Besok rencana kita A/B/C."
@@ -468,24 +460,23 @@ Setiap klik mouse harus ada alasannya.
 
 # 📅 RUTINITAS MINGGUAN (Senin/Jumat)
 
-**1. Panen Pemenang (Harvesting)**
-*   Pindahkan iklan bagus dari Testing (ABO) ke Scaling (CBO).
-*   Pakai **Post ID** (Wajib).
+**1. Evaluasi kandidat scale**
+*   Tinjau materi yang memenuhi target bisnis dengan periode, atribusi, dan volume data yang memadai.
+*   Pilih struktur campaign dan penggunaan **Post ID** bila sesuai dengan tujuan serta alur iklan.
 
 **2. Bersih-Bersih (Hygiene)**
 *   Hapus iklan Rejected.
 *   Hapus rule-rule lama yang tidak kepakai.
 
 **3. Restock Amunisi**
-*   Pastikan ada 3-5 konten baru untuk minggu depan.
-*   Jangan perang kalau peluru habis.
+*   Rencanakan materi berikutnya sesuai kebutuhan pengujian dan kapasitas produksi.
 
 ---
 
 # 🔒 PRINSIP FINAL
 1.  **Scale** itu pelan & terukur.
 2.  **Panik** = Boncos.
-3.  Disiplin waktu = Profit stabil.
+3.  Disiplin proses membantu menjaga evaluasi tetap konsisten, tetapi tidak menjamin profit.
 `
   },
   {
@@ -496,9 +487,9 @@ Setiap klik mouse harus ada alasannya.
     critical: true,
     content: `
 # Kapan Tombol Ini Ditekan?
-1.  Rugi harian tembus **Batas Toleransi** (misal Rp 200.000).
-2.  Lebih dari 50% iklan statusnya **MERAH**.
-3.  **CPP** (Biaya Closing) menggila.
+1.  Pengeluaran mencapai batas risiko harian yang ditetapkan bisnis sebelum kampanye berjalan.
+2.  Satu atau beberapa materi melewati kriteria merah yang sudah ditentukan; nilai jumlah dan dampaknya pada akun.
+3.  CPP melampaui batas impas atau target bisnis pada periode dan data yang layak dibandingkan.
 
 ---
 
@@ -509,7 +500,7 @@ Seringkali iklan bagus, tapi sistem error. Cek ini dulu:
 *   ❓ **Stok:** Barang habis gak?
 *   ❓ **CS:** CS ketiduran / WA error gak?
 
-> ⚠️ Jika Web/CS error: **MATIKAN SEMUA IKLAN SEGERA**. Perbaiki dulu. Jangan bakar uang.
+> ⚠️ Jika tautan, checkout, atau CS mengalami gangguan, pause kampanye yang mengarahkan ke alur tersebut sampai kendala diperbaiki. Periksa tiap tujuan iklan sebelum menghentikan kampanye lain.
 
 ---
 
@@ -521,12 +512,12 @@ Seringkali iklan bagus, tapi sistem error. Cek ini dulu:
 *   Stop Edit-edit.
 
 **Langkah 2: KILL SWITCH**
-*   **Iklan MERAH:** **MATIKAN FINAL**.
-*   **Iklan KUNING:** **PAUSE** (Tunggu CS lapor).
-*   **Iklan HIJAU:** Biarkan (Subsidi silang).
+*   **Iklan berisiko:** pause atau hentikan materi yang memenuhi kriteria risiko yang sudah disepakati.
+*   **Iklan KUNING:** Periksa kualitas data, jeda konversi, dan laporan CS; pause bila batas risiko tercapai.
+*   **Iklan HIJAU:** Nilai berdasarkan hasil dan margin masing-masing; jangan menganggapnya otomatis menutup kerugian materi lain.
 
 **Langkah 3: CUT LOSS**
-*   Jika rugi sudah tembus batas maksimal harian → **MATIKAN SEMUA IKLAN**.
+*   Jika kerugian melewati batas harian, hentikan penambahan risiko dan pause kampanye yang menyebabkan kerugian setelah memastikan data pengeluaran benar.
 *   Lebih baik hari ini nol, daripada minus dalam.
 *   Tidur. Tenangkan pikiran. Jangan "balas dendam" hari ini.
 
@@ -535,24 +526,21 @@ Seringkali iklan bagus, tapi sistem error. Cek ini dulu:
 # 3. Plan B: Mobilisasi CS
 Saat iklan boncos, uang harus ditarik manual.
 
-*   Instruksi ke CS: **"STOP nunggu chat baru."**
-*   Tugas Baru: **"Follow Up Database Lama."**
-*   Broadcast promo ke pembeli bulan lalu.
-*   Jemput bola. Tutup kerugian iklan dari database gratisan.
+*   Tinjau antrean pesan dan tindak lanjuti prospek sesuai janji, persetujuan, serta kebijakan komunikasi yang berlaku.
+*   Hubungi pelanggan lama hanya melalui kanal dan tujuan yang diizinkan; hormati pilihan berhenti menerima pesan.
 
 ---
 
 # 4. Restart (Besok Pagi)
 Jangan nyalakan semua iklan lama yang sudah boncos.
 
-**Strategi Sniper:**
-*   Mulai dengan budget **50%** dari biasa.
-*   Gunakan hanya 1-2 iklan **TERBAIK** (Proven).
-*   Target **Broad** (Luas).
-*   Cari untung kecil dulu, baru gas lagi.
+**Rencana mulai kembali:**
+*   Tetapkan anggaran awal berdasarkan batas risiko, kapasitas, dan data yang sudah dipastikan.
+*   Pilih materi yang memenuhi kriteria bisnis dan uji dengan struktur yang dapat dievaluasi.
+*   Uji audiens sesuai objective dan strategi akun; audiens luas bisa menjadi salah satu opsi.
 
 **Kunci Mental:**
-Jangan panik. Boncos itu biaya belajar, asal tidak diulang besok.
+Evaluasi penyebab sebelum memulai lagi. Kerugian bukan otomatis biaya belajar; pembelajaran perlu hipotesis, batas risiko, dan catatan hasil.
 `
   },
 
@@ -564,7 +552,7 @@ Jangan panik. Boncos itu biaya belajar, asal tidak diulang besok.
     mode: 'STRATEGIC',
     tab: 'ERA_AI',
     title: 'Meta Ads 2026: The New Game',
-    description: 'Pahami mesin di balik layar: Andromeda, GEM, dan Lattice.',
+    description: 'Ringkasan sistem rekomendasi dan pengukuran Meta dengan batasan interpretasinya.',
     critical: true,
     content: `
 # Dari Operator ke Arsitek
@@ -582,25 +570,18 @@ Sisanya **AI** yang nyetir secara Otonom.
 
 # Kenalan Sama "Otak Baru" Meta 2026
 
-### 1. Andromeda — "Si Penjaga Pintu" (Retrieval Engine)
-Mesin AI baru yang 100x lebih cepat dalam menyortir iklan.
-*   **Cara Kerja:** Dia TIDAK membaca setting interest kamu. Dia **membaca kontenmu**.
-*   **Tugas:** Mencocokkan konten visualmu dengan audiens secara real-time.
-*   **Implikasi:** Konten adalah targeting. Kalau kontenmu spesifik untuk "Ibu Hamil", Andromeda otomatis mencari Ibu Hamil tanpa perlu disuruh.
+### 1. Andromeda — sistem retrieval iklan
+Andromeda membantu memilih kandidat iklan yang relevan dalam sistem rekomendasi Meta. Ia bekerja sebagai bagian dari proses bertahap yang mempertimbangkan beragam sinyal dan konteks. Ini bukan berarti konten saja menentukan audiens atau pengaturan targeting tidak berpengaruh.
 
-### 2. GEM — "Si Dukun Prediksi" (Generative Model)
-Model prediksi yang belajar dari triliunan interaksi organik.
-*   **Cara Kerja:** Dia tahu konten mana yang bakal viral atau closing.
-*   **Implikasi:** Iklan yang terasa "Organik" (seperti postingan teman) akan diprioritaskan. Iklan kaku ala brosur akan dibuang.
+### 2. GEM — model rekomendasi iklan
+GEM adalah model generatif yang membantu sistem rekomendasi iklan mempelajari sinyal dan memprediksi relevansi. Hasilnya bersifat probabilistik; model ini tidak dapat memastikan iklan tertentu akan viral, closing, atau diprioritaskan.
 
-### 3. Lattice — "Si Mak Comblang" (Data Unifier)
-Arsitektur yang menyatukan data IG, FB, dan WA.
-*   **Cara Kerja:** Dia melihat perjalanan user secara utuh.
-*   **Implikasi:** Sinyal dari WA (closing) dipakai untuk mencari orang serupa di IG. Makanya **CAPI (Conversions API)** itu wajib hukumnya. Data putus = Lattice buta.
+### 3. Sinyal pengukuran dan Conversions API
+Conversions API dapat membantu mengirim sinyal kejadian dari server ke Meta jika implementasi dan persetujuannya tepat. Manfaatnya bergantung pada setup, kualitas data, deduplikasi, privasi, dan tujuan kampanye. Jangan mengasumsikan satu arsitektur menggabungkan seluruh perjalanan IG, Facebook, dan WhatsApp atau menjamin biaya lebih murah.
 
 ---
 
-# Cara Main Baru: Creative-as-Targeting
+# Kreatif dan Penentuan Audiens
 
 **❌ Cara Lama (Operator):**
 *   Sibuk cari interest "Kucing", "Hamil", "Karyawan".
@@ -608,23 +589,23 @@ Arsitektur yang menyatukan data IG, FB, dan WA.
 *   Iterasi minor (ganti warna tombol).
 
 **✅ Cara Baru (Arsitek):**
-*   Targeting **Broad** (Umur + Lokasi saja).
-*   **Konten** yang bertugas menargetkan (Creative-as-Targeting).
+*   Pertimbangkan audiens luas bila sesuai objective, produk, data, dan strategi akun.
+*   Gunakan kreatif untuk menjelaskan relevansi; delivery tetap dipengaruhi banyak sinyal dan pengaturan kampanye.
 *   Variasi **Radikal** (Ganti konsep total: UGC, Meme, Founder Story).
 
 ---
 
 # Checklist Anti-Boncos 2026
 
-**✅ WAJIB:**
-*   **Broad Targeting** (Biarkan Andromeda kerja).
-*   **CAPI** Terpasang (Beri makan Lattice).
-*   Variasi **8-15 Konsep Unik** (Beri opsi ke GEM).
-*   Format **Vertikal 9:16** (Wajib).
+**✅ Periksa:**
+*   Pilih audiens berdasarkan objective, produk, data, dan strategi akun; audiens luas dapat diuji bila sesuai.
+*   Evaluasi **Pixel/Conversions API** bila sesuai dengan tujuan, platform, persetujuan pengguna, dan kemampuan implementasi.
+*   Uji beberapa konsep yang cukup berbeda untuk dipelajari, sesuai anggaran dan kapasitas produksi; jumlah ideal bergantung pada volume data.
+*   Siapkan rasio/aset yang sesuai untuk placement yang dipilih; periksa crop, safe zone, dan keterbacaan.
 
-**❌ DILARANG:**
-*   Micro-targeting (Interest ribet).
-*   Sering edit iklan aktif (Reset Learning).
+**⚠️ Perhatikan:**
+*   Audiens terlalu sempit dapat membatasi jangkauan, tetapi dampaknya harus dinilai dari data akun.
+*   Hindari perubahan tanpa alasan; dampak edit bergantung pada jenis perubahan dan status kampanye.
 *   Menggunakan aset dengan data pribadi (KTP/SS Chat) -> Kena AI Risk Purge.
 `
   },
@@ -648,35 +629,33 @@ Jangan jual produk. Jual **DEAL (Kesepakatan)**.
 
 # 4 Pilar Penawaran Gila (Irresistible Offer)
 
-### 1. Bundle Magic (Matematika Profit)
+### 1. Bundel (Uji Matematika Profit)
 Jual 1 pcs itu capek dan margin tipis. Kalau kena CPR mahal, langsung rugi.
 **Solusi:** Buat paket agar AOV (Average Order Value) naik.
 
-*   ❌ Beli 1: Rp 99.000 (Profit: Rp 30rb) -> Kena iklan Rp 20rb, sisa Rp 10rb. Tipis!
-*   ✅ **Beli 2 Cuma Rp 149.000** (Profit: Rp 70rb) -> Kena iklan Rp 30rb, sisa Rp 40rb.
-*   ✅ **Paket Komplit (Isi 3): Rp 199.000**.
+*   ✅ **Contoh ilustratif:** bandingkan paket satuan dan bundel memakai harga, HPP, biaya kirim, biaya platform, retur, dan biaya iklan milik bisnis Anda. Hasil hitung tiap bisnis akan berbeda; contoh ini bukan rekomendasi harga.
 
-> **Tips:** Buat paket "No Brainer" dimana orang merasa bodoh kalau beli satuan.
+> **Tips:** Uji paket yang memberi nilai jelas tanpa menyesatkan. Pastikan harga, isi paket, biaya, dan margin sudah dihitung.
 
 ### 2. Risk Reversal (Pembalik Risiko)
 Orang Indonesia takut tertipu. Hilangkan ketakutan itu.
 
 **Opsi Aman:**
-*   ✅ **COD (Bayar di Tempat):** Standar wajib.
-*   ✅ **Garansi Rusak Ganti Baru:** Wajib ada video unboxing.
-*   ✅ **Garansi Uang Kembali (30 Hari):** Jika produk tidak ngefek (Khusus produk herbal/skin care tertentu).
+*   ✅ Tawarkan COD hanya jika layanan, area, biaya, dan proses operasional memang mendukung.
+*   ✅ Tawarkan penggantian barang rusak hanya bila kebijakan garansi, pengecualian, dan prosedur klaimnya benar-benar tersedia.
+*   ✅ Sebutkan garansi uang kembali hanya jika bisnis benar-benar memberikannya; tulis syarat, masa berlaku, dan pengecualiannya.
 
 **⛔ PERINGATAN KERAS (COD):**
 Jangan gunakan **"Buka Dulu Baru Bayar"** jika Anda menggunakan ekspedisi umum (JNE, J&T Regular, Sicepat, dll).
 *   **Risiko:** Kurir umum biasanya menolak ditungguin. Jika paket dibuka dan pembeli tidak jadi beli (karena tidak sesuai selera), barang retur dalam kondisi **RUSAK/TERBUKA**. Anda rugi barang + rugi ongkir.
 *   **Kecuali:** Anda menggunakan Shopee Express atau platform yang memfasilitasi "COD Cek Dulu".
 
-### 3. Urgency & Scarcity (Desakan)
-Jangan biarkan mereka mikir "Nanti aja".
+### 3. Batas waktu dan ketersediaan
+Sampaikan urgensi atau kelangkaan hanya jika benar, dapat dibuktikan, dan syaratnya jelas. Jika penawaran tidak memiliki batas waktu atau stok terbatas, jangan menambahkan kesan tersebut.
 
-*   ❌ "Diskon 50%." (Membosankan).
-*   ✅ "Diskon 50% **Khusus Pemesanan Hari Ini**."
-*   ✅ "Sisa **3 Slot** Promo untuk pengiriman besok."
+*   Cantumkan periode promo yang benar dan zona waktunya.
+*   Cantumkan jumlah stok/slot hanya jika data inventaris mendukungnya.
+*   Jelaskan harga, isi paket, dan syarat yang berlaku.
 
 ### 4. Bonuses (Gimmick)
 Barang yang nilainya tinggi di mata customer, tapi modalnya murah bagi Anda.
@@ -690,13 +669,13 @@ Barang yang nilainya tinggi di mata customer, tapi modalnya murah bagi Anda.
 # Checklist Sebelum Bikin Konten
 Cek "Jantung" penawaranmu. Kalau jantungnya lemah, jangan lari (iklan).
 
-1.  Apakah ada alasan logis kenapa harus beli **SEKARANG**?
+1.  Apakah informasi penawaran dan batas waktunya akurat serta dapat dibuktikan?
 2.  Apakah beli **PAKET** jauh lebih untung daripada satuan?
-3.  Apakah risiko pembeli sudah **NOL** (Garansi/COD)?
+3.  Apakah syarat layanan, garansi, dan metode pembayaran dijelaskan dengan jujur?
 4.  Apakah bonusnya menarik?
 
-**Rumus:**
-(Produk Bagus + Bonus Menarik + Diskon Paket + Garansi) x Urgency = **BANJIR ORDER**.
+**Prinsip:**
+Penawaran yang jelas, akurat, menguntungkan bisnis, dan sesuai kebutuhan pelanggan layak diuji. Tidak ada formula yang menjamin banjir order.
 `
   },
   {
@@ -709,37 +688,37 @@ Cek "Jantung" penawaranmu. Kalau jantungnya lemah, jangan lari (iklan).
 # 1. Infrastruktur Data (Pipa)
 Jangan biarkan AI "Rabun".
 
-✅ **Wajib: CAPI (Conversions API)**
-*   Pixel biasa itu rabun (kena iOS, AdBlock).
-*   CAPI itu jalur server. Lebih akurat.
-*   Tanpa CAPI, data closing di dashboard bakal **lebih rendah 30%** dari aslinya. AI jadi mengira iklanmu jelek, padahal bagus.
+✅ **Evaluasi pengukuran konversi**
+*   Browser dan server dapat mengirim sinyal konversi dengan batasan yang berbeda.
+*   Pertimbangkan Pixel dan/atau Conversions API sesuai objective, setup teknis, persetujuan, dan kebijakan privasi.
+*   Pixel atau Conversions API dapat membantu pengukuran, tetapi tidak menjamin angka sama dengan catatan penjualan. Bandingkan sumber data, jendela atribusi, consent, dan deduplikasi; jangan menerapkan persentase koreksi universal.
 
 ✅ **Account Hygiene (Kebersihan)**
-*   Meta punya "Skor Kepercayaan".
-*   Hapus iklan **Rejected**. Jangan ditumpuk.
-*   Akun bersih = **CPM** lebih murah.
+*   Periksa status akun dan kebijakan melalui Account Quality.
+*   Perbaiki atau banding jika iklan ditolak dan Anda yakin keputusan keliru.
+*   Kepatuhan penting untuk menjaga akses akun, tetapi tidak ada jaminan bahwa akun yang rapi selalu memperoleh CPM lebih murah.
 
 ---
 
-# 2. Struktur Kampanye Anti-Ribet (The Simplification Revolution)
-Struktur rumit membunuh performa AI Andromeda.
+# 2. Struktur Kampanye
+Pilih struktur yang dapat dikelola dan sesuai dengan objective, anggaran, kebutuhan pengujian, serta volume data.
 
 ### A. Kampanye Testing (LAB)
-*   **Tujuan:** Cari konten pemenang.
-*   **Budget:** 20% dari total.
-*   **Setting:** ABO (Budget di Adset).
-*   **Isi:** Tes 3-5 video baru setiap minggu.
-*   **Mindset:** "Di sini tempat membuang ide jelek."
+*   **Tujuan:** Menguji hipotesis kreatif yang jelas.
+*   **Budget:** tentukan porsi testing sesuai anggaran, kebutuhan belajar, dan batas risiko bisnis.
+*   **Setting:** Pilih ABO, CBO, atau struktur lain sesuai rancangan eksperimen; tidak ada satu setelan wajib untuk semua akun.
+*   **Isi:** uji variasi materi sesuai anggaran, kapasitas produksi, dan volume data yang diperlukan.
+*   **Mindset:** Catat asumsi dan hasil setiap pengujian.
 
 ### B. Kampanye Scaling (WINNER)
-*   **Tujuan:** Cetak uang.
-*   **Budget:** 80% dari total.
-*   **Setting:** CBO (Budget di Kampanye) atau Advantage+.
-*   **Isi:** Hanya iklan-iklan yang sudah terbukti menang di Testing.
-*   **Mindset:** "Jangan sentuh-sentuh kalau sedang profit."
+*   **Tujuan:** Mengalokasikan anggaran ke materi yang menunjukkan hasil sesuai target bisnis.
+*   **Budget:** alokasikan ke materi yang memenuhi target bisnis dan tetap pantau kapasitas operasional.
+*   **Setting:** CBO, Advantage+, atau pilihan lain berdasarkan kebutuhan kontrol dan cara kerja akun.
+*   **Isi:** materi yang memenuhi kriteria bisnis dan memiliki data yang layak untuk dievaluasi.
+*   **Mindset:** Hindari perubahan tanpa alasan; pantau hasil dan kapasitas operasional.
 
 ### C. Challenger ASC (Opsi Scale Lanjut)
-*   Jika iklan winner mulai stagnan, pindahkan ke kampanye Advantage+ Shopping (ASC).
+*   Jika hasil melemah, periksa faktor kreatif, audiens, penawaran, tracking, dan operasional sebelum memutuskan struktur uji berikutnya.
 *   Biarkan dia bertarung di kolam yang lebih luas.
 
 ---
@@ -752,9 +731,8 @@ Saat iklan bagus di Testing dan mau dipindah ke Scaling:
 ✅ **GUNAKAN POST ID**.
 
 **Kenapa?**
-*   Like, Komen, Share ikut terbawa.
-*   Ini namanya **Social Proof**.
-*   Iklan yang sudah banyak like-nya, **CPM**-nya lebih murah dan konversinya lebih tinggi.
+*   Post ID dapat mempertahankan interaksi pada postingan yang sama jika alur iklan mendukungnya.
+*   Interaksi dapat memberi konteks sosial, tetapi tidak menjamin CPM lebih murah atau konversi lebih tinggi.
 
 ---
 
@@ -769,11 +747,10 @@ Saat iklan bagus di Testing dan mau dipindah ke Scaling:
     mode: 'STRATEGIC',
     tab: 'KREATIF',
     title: 'Strategi Konten & Hook',
-    description: 'Konten adalah Targeting yang sesungguhnya.',
+    description: 'Materi membantu menjelaskan relevansi produk; bukan satu-satunya faktor targeting.',
     content: `
 # 1. Filosofi Konten
-Di 2026, **Konten = Targeting**.
-Jangan sibuk nyuruh AI cari siapa. Kasih AI bahan yang jelas, biar dia tahu harus nyari siapa.
+Materi kreatif dapat membantu menyampaikan relevansi kepada calon pelanggan, tetapi bukan satu-satunya faktor delivery atau penargetan. Gunakan kreatif yang jelas dan sesuai produk, lalu evaluasi bersama pengaturan audiens dan tujuan kampanye.
 
 ❌ **Mental Operator:** Ganti warna tombol, ganti headline dikit (Iterasi Minor).
 ✅ **Mental Arsitek:** Ganti **IDE** dan **SUDUT PANDANG** (Variasi Radikal).
@@ -781,12 +758,12 @@ Jangan sibuk nyuruh AI cari siapa. Kasih AI bahan yang jelas, biar dia tahu haru
 ---
 
 # 2. Menu Wajib (Archetypes)
-Jangan bikin satu jenis konten doang. Siapkan 8-15 Konsep Unik.
+Uji beberapa konsep yang benar-benar berbeda jika sumber daya dan volume data memungkinkan. Jumlah yang tepat bergantung pada anggaran, objektif, dan kemampuan produksi.
 
 🎥 **Lo‑Fi UGC (Si Jujur)**
 *   Rekam pakai HP, goyang dikit gak apa-apa.
 *   Testimoni natural.
-*   *Kenapa ampuh?* Interaksi 6.9x lebih tinggi.
+*   *Catatan:* performa UGC bergantung pada audiens, produk, eksekusi, dan tujuan; validasi dengan eksperimen sendiri.
 
 🎬 **Cinematic Founder Story (Si Emosional)**
 *   Owner muncul, cerita perjuangan/masalah.
@@ -802,11 +779,8 @@ Jangan bikin satu jenis konten doang. Siapkan 8-15 Konsep Unik.
 
 ---
 
-# 3. Format Wajib: Vertikal (9:16)
-Lupakan video kotak atau landscape.
-90% Inventaris Meta adalah Vertikal.
-*   Reels / Story / TikTok itu **Vertikal**.
-*   Video vertikal = Efisiensi CPM terbaik.
+# 3. Sesuaikan format dengan placement
+Siapkan versi rasio dan crop yang cocok untuk placement tujuan (misalnya vertikal untuk Stories/Reels). Periksa area aman teks, keterbacaan, dan preview tiap placement. Format saja tidak menjamin CPM lebih efisien.
 
 ---
 
@@ -815,7 +789,7 @@ Lupakan video kotak atau landscape.
 🧲 **BAB 1: THE HOOK (Detik 0–3)**
 *   **Tugas:** Hentikan jempol.
 *   **Syarat:** Harus ada wajah, gerakan cepat, atau teks besar yang relevan.
-*   **Metrik:** Hook Rate < 25% = **SAMPAH**.
+*   **Metrik:** bandingkan hook rate dengan variasi kreatif yang sepadan. Nilai rendah adalah petunjuk untuk diperiksa, bukan bukti bahwa materi tidak layak.
 
 ⏳ **BAB 2: BODY (Detik 3–15)**
 *   **Tugas:** Jangan membosankan.
@@ -833,7 +807,7 @@ Lupakan video kotak atau landscape.
 ✅ Apakah 3 detik pertama bikin kaget/penasaran?
 ✅ Apakah caption menjawab pertanyaan user? (Social SEO).
 ✅ Apakah videonya Vertikal (9:16)?
-❌ Apakah ini cuma video lama yang diedit dikit? (Similarity Penalty).
+❌ Apakah versi baru memberi hipotesis kreatif yang cukup berbeda untuk diuji? Hindari menyimpulkan penalti platform tanpa bukti.
 `
   },
   {
@@ -846,28 +820,25 @@ Lupakan video kotak atau landscape.
     content: `
 # 📡 Metrik Detak Jantung (Wajib Pantau)
 
-Ini adalah angka-angka yang menentukan hidup matinya iklanmu di era Andromeda.
+Metrik ini membantu membaca hasil, tetapi keputusan perlu mempertimbangkan objective, margin, kualitas data, atribusi, dan konteks akun.
 
 ### 1. Hook Rate (Thumb-stop Ratio)
 Persentase orang yang berhenti scroll di 3 detik pertama.
 *   **Rumus:** (3-Second Plays ÷ Impressions).
-*   **Target Sehat:** > 30%.
-*   **Artinya:** Kalau < 25%, visual depanmu GAGAL. Ganti 3 detik awal segera.
+*   **Target:** tetapkan dari baseline akun dan bandingkan materi dengan objective, placement, serta periode yang sepadan.
+*   **Artinya:** Bandingkan dengan variasi lain yang sepadan dan pastikan definisi metriknya sama. Gunakan hasil untuk menguji revisi, bukan sebagai ambang universal.
 
-### 2. Hold Rate (Retensi)
-Persentase orang yang bertahan nonton sampai 15 detik (setelah kena hook).
-*   **Rumus:** (ThruPlays ÷ 3-Second Plays).
-*   **Target Sehat:** > 25%.
-*   **Artinya:** Kalau rendah, videomu membosankan di tengah. Edit jadi lebih cepat.
+### 2. Retensi tontonan
+Pilih metrik retensi yang tersedia pada platform dan bandingkan format serta durasi video yang serupa. Angka rendah dapat menjadi alasan untuk memeriksa alur, tetapi tidak membuktikan bahwa satu bagian video pasti membosankan.
 
 ### 3. CPMr (Cost per Mille Reach) - Radar Fatigue
 Biaya menjangkau 1.000 orang **BARU**. (Beda dengan CPM biasa).
-*   **Target:** < Rp 300.000 (Rp 20rb - 30rb untuk CPM tayangan).
-*   **Artinya:** Kalau CPMr naik tajam tapi CPM stabil, berarti iklanmu **BASI**. Algoritma berhenti cari orang baru. Ganti konten total.
+*   **Target:** bandingkan dengan baseline akun, audiens, placement, musim, dan tujuan kampanye.
+*   **Artinya:** Perubahan CPMr dapat menjadi alasan memeriksa jangkauan dan frekuensi; metrik ini sendiri tidak membuktikan fatigue atau bahwa delivery berhenti mencari audiens baru.
 
 ### 4. CPR (Cost per Result)
 Biaya untuk dapat 1 chat masuk.
-*   **Target:** < Rp 6.000 (rata-rata retail).
+*   **Target:** hitung dari margin produk, target profit, biaya lain, serta kualitas hasil yang diinginkan.
 *   **Artinya:** Indikator efisiensi harian. Kalau mahal, cek konten atau offer.
 
 ---
@@ -884,17 +855,17 @@ Angka-angka ini sering bikin advertiser merasa hebat, padahal dompet kosong.
 
 # 💊 Matrix Diagnosa Dokter
 
-**Gejala 1: Hook Rate Rendah (< 25%)**
-*   **Penyakit:** Visual depan gagal.
-*   **Obat:** Potong 3 detik awal, ganti yang lebih "nendang".
+**Gejala 1: Hook rate lebih rendah dari materi pembanding**
+*   **Periksa:** definisi metrik, jumlah tayangan, placement, dan kecocokan audiens.
+*   **Uji:** variasi pembuka dengan perubahan terkontrol, lalu bandingkan pada kondisi sepadan.
 
 **Gejala 2: Hook Tinggi, Hold Rendah**
 *   **Penyakit:** Clickbait atau konten membosankan.
 *   **Obat:** Edit video bagian tengah, percepat alur.
 
-**Gejala 3: CPMr Melonjak**
-*   **Penyakit:** Creative Fatigue (Jenuh).
-*   **Obat:** Matikan. Buat konten baru dengan konsep BEDA (Variasi Radikal).
+**Gejala 3: CPMr meningkat**
+*   **Periksa:** jangkauan, frekuensi, audiens, kompetisi, placement, dan periode.
+*   **Uji:** materi baru jika ada bukti kelelahan kreatif; jangan menganggap kenaikan biaya saja membuktikan fatigue.
 
 **Gejala 4: CPR Mahal**
 *   **Penyakit:** Konten tidak relevan atau offer jelek.
@@ -925,12 +896,11 @@ Jangan bebankan "Closing" ke iklan semata.
 
 ---
 
-# 2. Golden Time (72 Jam)
-Meta memberi "Diskon". Jika user klik iklan ke WA, kita punya waktu 72 jam untuk follow-up tanpa bayar biaya pesan tambahan.
+# 2. Jendela layanan dan persetujuan follow-up
+Jendela layanan WhatsApp umumnya 24 jam setelah pesan terakhir dari pengguna; di luar jendela, Platform WhatsApp Business membatasi pesan bisnis ke template yang disetujui. Periode 72 jam pada alur iklan tertentu terkait persetujuan untuk pesan lanjutan, bukan aturan umum bahwa semua follow-up gratis. Selalu cek kebijakan dan tarif terbaru.
 
-*   **Strategi:** Jangan cuma balas harga.
-*   **Nurturing:** Kirim foto testimoni, video cara pakai, tanya kabar.
-*   Manfaatkan 72 jam ini untuk PDKT sampai closing.
+*   **Strategi:** jawab pertanyaan yang masuk dengan informasi yang relevan dan akurat.
+*   **Tindak lanjut:** kirim pesan lanjutan hanya sesuai persetujuan pengguna dan kebijakan WhatsApp.
 
 ---
 
@@ -951,15 +921,15 @@ Apa yang ditulis di iklan, harus jadi balasan pertama di WA.
 ---
 
 # 4. Integrasi Dashboard & Realita
-Data dashboard sering "halu" (Gap Data 20-30%).
+Perbedaan antara dashboard iklan dan catatan CS dapat terjadi; besar selisihnya tidak tetap.
 
 *   **Masalah:** Dashboard lapor 100 Result, di HP CS cuma ada 70 Chat.
 *   **Sebab:** User klik tombol, masuk WA, tapi **batal kirim**. (Ghosting).
 *   **Solusi:**
     1.  Pantau data **REAL** dari laporan CS.
-    2.  Jika selisihnya > 30%, berarti loadingmu lama atau pesan awalanmu menakutkan.
+    2.  Jika ada selisih, periksa atribusi, definisi event, klik tanpa pesan terkirim, keterlambatan laporan, dan kendala teknis.
 
-> **Kunci:** Jangan matikan iklan cuma karena dashboard terlihat mahal, kalau ternyata di realita CS closingan lagi panen. **Konfirmasi ke CS dulu.**
+> **Kunci:** Gunakan laporan CS sebagai salah satu sumber, lalu cocokkan periode, atribusi, status lead, dan biaya sebelum mengubah keputusan kampanye.
 `
   },
   {
@@ -972,19 +942,19 @@ Data dashboard sering "halu" (Gap Data 20-30%).
 # A - Z Kamus Advertiser
 
 **Andromeda**
-Mesin AI Meta baru yang membaca konten visual untuk mencari audiens.
+Sistem retrieval Meta yang membantu memilih kandidat iklan dalam proses rekomendasi bertahap. Konten adalah salah satu sinyal; jangan anggap materi saja menentukan audiens.
 
 **Broad Targeting**
-Setting target tanpa interest. Cuma atur Umur, Gender, Lokasi. Membiarkan AI yang mencari pembeli berdasarkan data konten.
+Pengaturan audiens yang lebih luas dengan kontrol tertentu. Cocok atau tidaknya bergantung pada objective, produk, data, dan aturan platform; kreatif bukan satu-satunya sinyal delivery.
 
 **CAPI (Conversions API)**
-Kabel data khusus dari server web ke server Meta (Lattice). Lebih akurat daripada Pixel biasa. Wajib pakai biar data gak bocor.
+Cara mengirim event dari server ke Meta untuk mendukung pengukuran. Implementasi harus sesuai tujuan, consent, dan aturan privasi. CAPI tidak otomatis menggantikan Pixel atau menjamin akurasi lebih tinggi.
 
 **CPM (Cost per Mille)**
 Biaya sewa lapak per 1.000 tayangan. Indikator mahal/murahnya persaingan di pasar.
 
 **CPMr (Cost per Mille Reach)**
-Biaya menjangkau 1.000 orang unik (baru). Kalau ini naik, berarti iklan mulai basi (Fatigue).
+Biaya per seribu jangkauan sesuai definisi laporan platform. Kenaikan dapat dipengaruhi banyak faktor dan tidak sendirinya membuktikan fatigue.
 
 **CPR (Cost per Result)**
 Biaya per hasil (biasanya per Chat masuk).
@@ -993,16 +963,16 @@ Biaya per hasil (biasanya per Chat masuk).
 Persentase orang yang klik iklan setelah melihatnya. Mengukur daya tarik penawaran.
 
 **Hook Rate**
-Persentase orang berhenti scroll di 3 detik awal. Ukuran bagus/jeleknya visual depan video. Target > 30%.
+Metrik pemutaran awal yang perlu dibaca berdasarkan definisi platform. Gunakan untuk membandingkan materi dengan kondisi serupa; targetnya ditetapkan dari baseline dan objective akun.
 
 **Hold Rate**
 Persentase orang yang lanjut nonton sampai 15 detik. Ukuran kualitas storytelling.
 
 **Learning Phase**
-Masa sekolah AI. Iklan baru butuh sekitar 50 konversi seminggu biar "lulus" dan stabil. Kalau sering diedit, dia balik sekolah lagi (reset).
+Status pembelajaran delivery Meta setelah perubahan atau publikasi kampanye. Kebutuhan volume dan dampak perubahan bergantung pada objective dan konfigurasi; periksa panduan Meta terbaru, jangan menganggap setiap edit mereset learning.
 
-**Similarity Penalty**
-Hukuman biaya mahal dari Meta karena iklanmu terlalu mirip (cuma ganti teks/warna) dengan iklan lamamu. Solusinya: Variasi Radikal.
+**Kemiripan materi**
+Materi dengan perbedaan kreatif yang kecil bisa memberi sedikit variasi untuk diuji. Jangan menyimpulkan CPM mahal sebagai penalti kemiripan tanpa data atau bukti dari platform.
 `
   }
 ];
