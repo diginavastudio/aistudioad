@@ -16,7 +16,7 @@ export default function AiSettings() {
   {open&&<div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4" onClick={()=>setOpen(false)}>
    <section role="dialog" aria-modal="true" aria-labelledby="ai-title" className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl" onClick={e=>e.stopPropagation()}>
     <h2 id="ai-title" className="text-xl font-bold">Koneksi OpenAI</h2>
-    <p className="mt-3 text-sm text-gray-600">Generator, Spy Tool, dan Analisa Iklan memakai GPT-4.1 mini. API key tersimpan di server.</p>
+    <p className="mt-3 text-sm text-gray-600">Generator, Spy Tool, dan Analisa Iklan memakai GPT-6 Luna. API key tersimpan di server.</p>
     <p className="mt-3 text-sm text-gray-600">Mode video menganalisis maksimal 10 frame terpilih. Audio tidak dianalisis. Materi dikirim ke OpenAI; penggunaan mengikuti kuota API akunmu.</p>
     <p role="status" className="mt-4 text-sm">{message || (status==='ready'?'API key sudah dikonfigurasi. Jalankan tes untuk memeriksa akses dan kuota.':'Koneksi belum dapat dikonfirmasi.')}</p>
     <div className="mt-6 flex justify-end gap-3"><button onClick={()=>setOpen(false)} className="rounded-lg border px-4 py-2">Tutup</button><button disabled={testing||status!=='ready'} onClick={test} className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white disabled:opacity-50">{testing?'Memeriksa…':'Tes koneksi'}</button></div>
